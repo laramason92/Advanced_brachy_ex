@@ -60,6 +60,7 @@
 BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
   : steel_shell(0),logical_steel_shell(0),air_gap(0), logical_air_gap(0), physical_air_gap(0),
     End1_steel_shell(0),logical_End1_steel_shell(0), physical_End1_steel_shell(0),
+    End1cone_steel_shell(0),logical_End1cone_steel_shell(0), physical_End1cone_steel_shell(0),
     End2_steel_shell(0),logical_End2_steel_shell(0), physical_End2_steel_shell(0),
     cable(0),logical_cable(0),physical_cable(0),
     iridium_core(0),logical_iridium_core(0),physical_iridium_core(0),
@@ -82,11 +83,14 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
  //Define dimensions of the outer Steel shell around the solid source - not including the ends 
 
   G4double shellr_min = 0.00 * mm;
-  G4double shellr_max = 1.1 * mm;
-  G4double shell_length = 4.83 * mm; //4.96-0.15 
+  G4double shellr_max = 0.9 * mm;
+  G4double shell_length = 3.6 * mm; //4.96-0.15 
+  G4double shelloffset_x = 0.0 * mm;
+  G4double shelloffset_y = 0.0 * mm;
+  G4double shelloffset_z = 0.05 * mm; 
   steel_shell = new G4Tubs("steel_shell",shellr_min, shellr_max/2, shell_length/2.,0.*deg,360.*deg);
   logical_steel_shell = new G4LogicalVolume(steel_shell, steelMat, "steel_shell_log", 0, 0, 0);
-  physical_steel_shell = new G4PVPlacement(0,G4ThreeVector(0,0,0),"phys_steel_shell", logical_steel_shell, mother, false, 0, true);
+  physical_steel_shell = new G4PVPlacement(0,G4ThreeVector(shelloffset_x,shelloffset_y,shelloffset_z),"phys_steel_shell", logical_steel_shell, mother, false, 0, true);
 
 //Define dimensions of the air gap between Steel shell and Iridium core
   G4double airr_min = 0.00 * mm;
@@ -101,46 +105,61 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
 
 //Define the non-cable weld end of the Steel shell 
   G4double End1r_min = 0.0 * mm;
-  G4double End1r_max = 1.1 * mm;
-  G4double End1length = 0.86 * mm; 
+  G4double End1r_max = 0.9 * mm;
+  G4double End1length = 0.465 * mm; 
   End1_steel_shell = new G4Tubs("End_1_steel_shell",End1r_min, End1r_max/2, End1length/2.,0.*deg,360.*deg);
   logical_End1_steel_shell = new G4LogicalVolume(End1_steel_shell, steelMat, "End1_steel_shell_log", 0, 0, 0);
   G4double end1offset_x = 0.0 * mm;
   G4double end1offset_y = 0.0 * mm;
-  G4double end1offset_z = 2.23 * mm;
+  G4double end1offset_z = 2.0825 * mm;
   physical_End1_steel_shell = new G4PVPlacement(0,G4ThreeVector(end1offset_x,end1offset_y,end1offset_z),"phys_End1_steel_shell", logical_End1_steel_shell,mother, false, 0, true);
+
+  G4double End1coner1_min = 0.0 * mm; 
+  G4double End1coner1_max = 0.9 * mm;
+  G4double End1coner2_min = 0.0 * mm;
+  G4double End1coner2_max = 0.35 * mm;
+  G4double End1conelength = 0.155 * mm; 
+  End1cone_steel_shell = new G4Cons("End_1_cone_steel_shell",End1coner1_min, End1coner1_max/2,End1coner2_min, End1coner2_max/2, End1conelength/2.,0.*deg,360.*deg);
+  logical_End1cone_steel_shell = new G4LogicalVolume(End1cone_steel_shell, steelMat, "End1cone_steel_shell_log", 0, 0, 0);
+  G4double end1coneoffset_x = 0.0 * mm;
+  G4double end1coneoffset_y = 0.0 * mm;
+  G4double end1coneoffset_z = 2.3925 * mm;
+  physical_End1cone_steel_shell = new G4PVPlacement(0,G4ThreeVector(end1coneoffset_x,end1coneoffset_y,end1coneoffset_z),"phys_End1cone_steel_shell", logical_End1cone_steel_shell,mother, false, 0, true);
 
 //Define the cable weld end of the Steel shell 
   G4double End2r_min1 = 0.0 * mm;
-  G4double End2r_max1 = 1.1 * mm;
+  G4double End2r_max1 = 0.9 * mm;
   G4double End2r_min2 = 0.0 * mm;
-  G4double End2r_max2 = 1.1 * mm;
-  G4double End2length = 0.5 * mm;
+  G4double End2r_max2 = 0.9 * mm;
+  G4double End2length = 0.3 * mm;
   End2_steel_shell = new G4Cons("End_2_steel_shell",End2r_min2, End2r_max2/2, End2r_min1, End2r_max1/2, End2length/2.0, 0.0, 360.0*deg);
   logical_End2_steel_shell = new G4LogicalVolume(End2_steel_shell, steelMat, "End2_steel_shell_log", 0, 0, 0);
   G4double end2offset_x = 0.0 * mm;
   G4double end2offset_y = 0.0 * mm;
-  G4double end2offset_z = -2.0 * mm; 
+  G4double end2offset_z = -1.9 * mm; 
   physical_End2_steel_shell = new G4PVPlacement(0,G4ThreeVector(end2offset_x,end2offset_y,end2offset_z), "phys_End2_steel_shell", logical_End2_steel_shell,mother, false, 0, true);
 
 //Define the cable 
   G4double cable_min = 0.0 * mm;
-  G4double cable_max = 1.1 * mm;
+  G4double cable_max = 0.9 * mm;
   G4double cablelength = 5.0 * mm; 
   cable = new G4Tubs("cable",cable_min, cable_max/2, cablelength/2.,0.*deg,360.*deg);
   logical_cable = new G4LogicalVolume(cable, steelMat, "cable_log", 0, 0, 0);
   G4double cableoffset_x = 0.0 * mm;
   G4double cableoffset_y = 0.0 * mm;
-  G4double cableoffset_z = -4.75 * mm;
+  G4double cableoffset_z = -4.55 * mm;
   physical_cable = new G4PVPlacement(0,G4ThreeVector(cableoffset_x,cableoffset_y,cableoffset_z),"phys_cable", logical_cable, mother, false, 0, true);
 
 // Define the Iridium core
   G4double corer_min = 0.0 * mm;	
   G4double corer_max = 0.6 * mm;
   G4double core_length = 3.5 * mm; 
+  G4double iridiumcoreoffset_x = 0.0 * mm;
+  G4double iridiumcoreoffset_y = 0.0 * mm;
+  G4double iridiumcoreoffset_z = 0.0 * mm;
   iridium_core = new G4Tubs("iridium_core",corer_min, corer_max/2,core_length/2.,0.*deg,360.*deg);
   logical_iridium_core = new G4LogicalVolume(iridium_core, iridiumMat, "iridium_core_log", 0, 0, 0);
-  physical_iridium_core = new G4PVPlacement(0,G4ThreeVector(0,0,0), "phys_iridium_core", logical_iridium_core, physical_air_gap, false, 0, true);
+  physical_iridium_core = new G4PVPlacement(0,G4ThreeVector(iridiumcoreoffset_x,iridiumcoreoffset_y,iridiumcoreoffset_z), "phys_iridium_core", logical_iridium_core, physical_air_gap, false, 0, true);
 
 // Visualisations
 
@@ -154,6 +173,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   endAttributes -> SetForceAuxEdgeVisible(true);
   logical_steel_shell -> SetVisAttributes(steelAttributes);
   logical_End1_steel_shell -> SetVisAttributes(endAttributes);
+  logical_End1cone_steel_shell -> SetVisAttributes(endAttributes);
   logical_End2_steel_shell -> SetVisAttributes(endAttributes);
   logical_cable -> SetVisAttributes(steelAttributes);
  
@@ -206,11 +226,20 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
   delete physical_End1_steel_shell; 
   physical_End1_steel_shell = 0;
    
+  delete physical_End1cone_steel_shell; 
+  physical_End1cone_steel_shell = 0;
+   
   delete logical_End1_steel_shell; 
   logical_End1_steel_shell = 0;
   
   delete End1_steel_shell; 
   End1_steel_shell = 0;
+
+  delete logical_End1cone_steel_shell; 
+  logical_End1cone_steel_shell = 0;
+  
+  delete End1cone_steel_shell; 
+  End1cone_steel_shell = 0;
 
   delete physical_air_gap;
   physical_air_gap = 0;

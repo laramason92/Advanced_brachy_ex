@@ -74,6 +74,10 @@ private:
   G4LogicalVolume* logical_End1_steel_shell;
   G4VPhysicalVolume* physical_End1_steel_shell;
 
+  G4Cons* End1cone_steel_shell;
+  G4LogicalVolume* logical_End1cone_steel_shell;
+  G4VPhysicalVolume* physical_End1cone_steel_shell;
+
   G4Cons* End2_steel_shell;
   G4LogicalVolume* logical_End2_steel_shell;
   G4VPhysicalVolume* physical_End2_steel_shell;
