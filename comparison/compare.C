@@ -89,7 +89,7 @@ gr2->Draw("CP");
 TLegend *leg = new TLegend(0.6, 0.7, 0.85, 0.85);
 leg->SetFillColor(0);
 leg->AddEntry(gr1, "Reference data", "lp");
-leg->AddEntry(gr2, "Geant4 - 280e6 events", "lp");
+leg->AddEntry(gr2, "Geant4 - 280 M events", "lp");
 leg->Draw();
 
 
