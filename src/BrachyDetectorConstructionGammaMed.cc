@@ -64,7 +64,10 @@ BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
     End2_steel_shell(0),logical_End2_steel_shell(0), physical_End2_steel_shell(0),
     cable(0),logical_cable(0),physical_cable(0),
     iridium_core(0),logical_iridium_core(0),physical_iridium_core(0),
-    steelAttributes(0), endAttributes(0), simpleIridiumVisAtt(0)
+    metal_rod1(0),logical_metal_rod1(0),physical_metal_rod1(0),
+    metal_rod2(0),logical_metal_rod2(0),physical_metal_rod2(0),
+    metal_rod2bent(0),logical_metal_rod2bent(0),physical_metal_rod2bent(0),
+    steelAttributes(0), titaniumAttributes(0), endAttributes(0), simpleIridiumVisAtt(0)
 {
   pMat = new BrachyMaterial();
 }
@@ -79,6 +82,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4Material* steelMat = pMat -> GetMat("Stainless steel 304");
   G4Material* iridiumMat = pMat -> GetMat("Iridium");
   G4Material* airMat = pMat -> GetMat("Air");
+  G4Material* titaniumMat = pMat -> GetMat("titanium");
 
  //Define dimensions of the outer Steel shell around the solid source - not including the ends 
 
@@ -161,6 +165,42 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   logical_iridium_core = new G4LogicalVolume(iridium_core, iridiumMat, "iridium_core_log", 0, 0, 0);
   physical_iridium_core = new G4PVPlacement(0,G4ThreeVector(iridiumcoreoffset_x,iridiumcoreoffset_y,iridiumcoreoffset_z), "phys_iridium_core", logical_iridium_core, physical_air_gap, false, 0, true);
 
+// Define the first metal rod of applicator to do get correct measurements
+  G4double rod1r_min = 1.5 * mm;	
+  G4double rod1r_max = 3.0 * mm;
+  G4double rod1_length = 60.0 * mm; 
+  G4double rod1offset_x = 0.0 * mm;
+  G4double rod1offset_y = 0.0 * mm;
+  G4double rod1offset_z = 0.0 * mm;
+  metal_rod1 = new G4Tubs("metal_rod1",rod1r_min/2, rod1r_max/2,rod1_length/2.,0.*deg,360.*deg);
+  logical_metal_rod1 = new G4LogicalVolume(metal_rod1, titaniumMat, "metal_rod1_log", 0, 0, 0);
+  G4RotationMatrix* rotationMatrixX90 = new G4RotationMatrix();
+  rotationMatrixX90->rotateX(90.*deg);
+  physical_metal_rod1 = new G4PVPlacement(0,G4ThreeVector(rod1offset_x,rod1offset_y,rod1offset_z), "phys_metal_rod1", logical_metal_rod1, mother, false, 0, true);//rot
+
+// Define the second metal rod of applicator to do get correct measurements
+  G4double rod2r_min = 1.5 * mm;	
+  G4double rod2r_max = 3.0 * mm;
+  G4double rod2_length = 60.0 * mm; 
+  G4double rod2offset_x = 1*(15.*0.86602540378443871) * mm; //cos30, the 15 is half the diameter of the ring - change to variable name asap
+  G4double rod2offset_y = 0.0 * mm;
+  G4double rod2offset_z = 0.0 * mm;
+  metal_rod2 = new G4Tubs("metal_rod2",rod2r_min/2, rod2r_max/2,rod2_length/2.,0.*deg,360.*deg);
+  logical_metal_rod2 = new G4LogicalVolume(metal_rod2, titaniumMat, "metal_rod2_log", 0, 0, 0);
+  physical_metal_rod2 = new G4PVPlacement(0,G4ThreeVector(rod2offset_x,rod2offset_y,rod2offset_z), "phys_metal_rod2", logical_metal_rod2, mother, false, 0, true);//rot
+
+  G4double rod2bent_length = 60.0 * mm; 
+  G4double rod2bentoffset_x = rod2offset_x - (rod2bent_length*0.49999999999999994)/2.0 * mm;//sin30
+  G4double rod2bentoffset_y = 0 * mm;//rod2_length/2. + (rod2bent_length*0.49999999999999994)/2 * mm;
+  G4double rod2bentoffset_z = (rod2bent_length*0.86602540378443871)/2.+rod2_length/2. * mm;
+  G4RotationMatrix* rotationMatrixX90Z30 = new G4RotationMatrix();
+  rotationMatrixX90Z30->rotateY(30.*deg);
+  //rotationMatrixX90Z30->rotateX(90.*deg);
+  metal_rod2bent = new G4Tubs("metal_rod2bent",rod2r_min/2, rod2r_max/2,rod2bent_length/2.,0.*deg,360.*deg);
+  logical_metal_rod2bent = new G4LogicalVolume(metal_rod2bent, titaniumMat, "metal_rod2bent_log", 0, 0, 0);
+  physical_metal_rod2bent = new G4PVPlacement(rotationMatrixX90Z30,G4ThreeVector(rod2bentoffset_x,rod2bentoffset_y,rod2bentoffset_z), "phys_metal_rod2bent", logical_metal_rod2bent, mother, false, 0, true);
+
+
 // Visualisations
 
 //Shell/cable attributes    
@@ -176,6 +216,14 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   logical_End1cone_steel_shell -> SetVisAttributes(endAttributes);
   logical_End2_steel_shell -> SetVisAttributes(endAttributes);
   logical_cable -> SetVisAttributes(steelAttributes);
+
+  titaniumAttributes = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0)); // red
+  titaniumAttributes -> SetVisibility(true);
+  titaniumAttributes -> SetForceAuxEdgeVisible(true);
+
+  logical_metal_rod1 -> SetVisAttributes(titaniumAttributes);
+  logical_metal_rod2 -> SetVisAttributes(titaniumAttributes);
+  logical_metal_rod2bent -> SetVisAttributes(titaniumAttributes);
  
   G4Colour  magenta (1.0, 0.0, 1.0) ; 
 
@@ -213,6 +261,33 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
 
   delete cable; 
   cable = 0;
+  
+  delete physical_metal_rod1;
+  physical_metal_rod1 = 0;
+ 
+  delete logical_metal_rod1; 
+  logical_metal_rod1 = 0;
+
+  delete metal_rod1; 
+  metal_rod1 = 0;
+  
+  delete physical_metal_rod2;
+  physical_metal_rod2 = 0;
+ 
+  delete logical_metal_rod2; 
+  logical_metal_rod2 = 0;
+
+  delete metal_rod2; 
+  metal_rod2 = 0;
+  
+  delete physical_metal_rod2bent;
+  physical_metal_rod2bent = 0;
+ 
+  delete logical_metal_rod2bent; 
+  logical_metal_rod2bent = 0;
+
+  delete metal_rod2bent; 
+  metal_rod2bent = 0;
   
   delete physical_End2_steel_shell; 
   physical_End2_steel_shell = 0;

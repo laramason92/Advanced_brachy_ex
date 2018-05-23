@@ -68,9 +68,9 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
   phantomAbsorberMaterial(0)
 {
  // Define half size of the phantom along the x, y, z axis
- phantomSizeX = 15.*cm;
- phantomSizeY = 15.*cm;
- phantomSizeZ = 15.*cm;
+ phantomSizeX = 150.*cm;
+ phantomSizeY = 150.*cm;
+ phantomSizeZ = 150.*cm;
  
  // Define the sizes of the World volume containing the phantom
  worldSizeX = 4.0*m;
