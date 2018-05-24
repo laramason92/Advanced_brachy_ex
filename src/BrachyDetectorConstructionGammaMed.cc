@@ -72,6 +72,7 @@ BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
     metal_rod1(0),logical_metal_rod1(0),physical_metal_rod1(0),
     metal_rod1_end(0),logical_metal_rod1_end(0),physical_metal_rod1_end(0),
     metal_rod2_end(0),logical_metal_rod2_end(0),physical_metal_rod2_end(0),
+    metal_rod2bent_end(0),logical_metal_rod2bent_end(0),physical_metal_rod2bent_end(0),
     air_rod1(0),logical_air_rod1(0),physical_air_rod1(0),
     metal_rod2(0),logical_metal_rod2(0),physical_metal_rod2(0),
     air_rod2(0),logical_air_rod2(0),physical_air_rod2(0),
@@ -246,12 +247,27 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double rod2bentoffset_x = rod2offset_x - (rod2bent_length*0.49999999999999994)/2.0 * mm;//sin30
   G4double rod2bentoffset_y = 0 * mm;//rod2_length/2. + (rod2bent_length*0.49999999999999994)/2 * mm;
   G4double rod2bentoffset_z = ((rod2bent_length)*0.86602540378443871)/2.+rod2_length/2. * mm;
-  G4RotationMatrix* rotationMatrixX90Y30 = new G4RotationMatrix();
-  rotationMatrixX90Y30->rotateY(30.*deg);
-  //rotationMatrixX90Z30->rotateX(90.*deg);
+  G4RotationMatrix* rotationMatrixY30 = new G4RotationMatrix();
+  rotationMatrixY30->rotateY(30.*deg);
   metal_rod2bent = new G4Tubs("metal_rod2bent",rod2r_min, rod2r_max/2,rod2bent_length/2.,0.*deg,360.*deg);
   logical_metal_rod2bent = new G4LogicalVolume(metal_rod2bent, titaniumMat, "metal_rod2bent_log", 0, 0, 0);
-  physical_metal_rod2bent = new G4PVPlacement(rotationMatrixX90Y30,G4ThreeVector(rod2bentoffset_x,rod2bentoffset_y,rod2bentoffset_z), "phys_metal_rod2bent", logical_metal_rod2bent, mother, false, 0, true);
+  physical_metal_rod2bent = new G4PVPlacement(rotationMatrixY30,G4ThreeVector(rod2bentoffset_x,rod2bentoffset_y,rod2bentoffset_z), "phys_metal_rod2bent", logical_metal_rod2bent, mother, false, 0, true);
+
+// Define the end of bent second metal rod of applicator to do get correct measurements
+  G4double rod2bentr_end_min = 0.0 * mm;	
+  G4double rod2bentr_end_max = 3.0 * mm;
+  G4double rod2bent_endoffset_x = rod2bentoffset_x * mm;
+  G4double rod2bent_endoffset_y = 0.0 * mm;
+  G4double rod2bent_endoffset_z = rod2bentoffset_z + 0.86602540378443871*rod2bent_length/2.* mm;
+  G4RotationMatrix* rotationMatrixX90Y30 = new G4RotationMatrix();
+  rotationMatrixX90Y30->rotateX(-90.*deg);
+  rotationMatrixX90Y30->rotateZ(-30.*deg); //for some reason once I've flipped the X axis 90 degrees a rotation around Y must be written as a negative rotation around Z??? Go figure
+  G4ThreeVector rod2bentr_end_3vec(rod2bent_endoffset_x-0.5*rod2bent_length/2,rod2bent_endoffset_y,rod2bent_endoffset_z);
+  //rod2bentr_end_3vec.rotateX(-90.*deg);
+  //rod2bentr_end_3vec.rotateY(30.*deg);
+  metal_rod2bent_end = new G4Sphere("metal_rod2bent_end",rod2bentr_end_min, rod2bentr_end_max/2,0.*deg,180.*deg,0.*deg,180.*deg);
+  logical_metal_rod2bent_end = new G4LogicalVolume(metal_rod2bent_end, titaniumMat, "metal_rod2bent_end_log", 0, 0, 0);
+  physical_metal_rod2bent_end = new G4PVPlacement(rotationMatrixX90Y30,rod2bentr_end_3vec, "phys_metal_rod2bent_end", logical_metal_rod2bent_end, mother, false, 0, true);//rot
 
 // Define the air gap in the bent metal rod
   G4double rod3r_air_min = 0.0 * mm;	
@@ -332,6 +348,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   logical_metal_ring -> SetVisAttributes(titaniumAttributes);
   logical_metal_rod1_end -> SetVisAttributes(titaniumAttributes);
   logical_metal_rod2_end -> SetVisAttributes(titaniumAttributes);
+  logical_metal_rod2bent_end -> SetVisAttributes(titaniumAttributes);
  
   G4Colour  magenta (1.0, 0.0, 1.0) ; 
   G4Colour white (1.0, 1.0, 1.0) ;
@@ -429,6 +446,15 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
 
   delete metal_rod2_end; 
   metal_rod2_end = 0;
+  
+  delete physical_metal_rod2bent_end;
+  physical_metal_rod2bent_end = 0;
+ 
+  delete logical_metal_rod2bent_end; 
+  logical_metal_rod2bent_end = 0;
+
+  delete metal_rod2bent_end; 
+  metal_rod2bent_end = 0;
   
   delete physical_air_rod1;
   physical_air_rod1 = 0;
