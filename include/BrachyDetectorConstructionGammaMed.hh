@@ -103,9 +103,17 @@ private:
   G4LogicalVolume* logical_metal_rod1;
   G4VPhysicalVolume* physical_metal_rod1;
 
+  G4Tubs* air_rod1;
+  G4LogicalVolume* logical_air_rod1;
+  G4VPhysicalVolume* physical_air_rod1;
+
   G4Tubs* metal_rod2;
   G4LogicalVolume* logical_metal_rod2;
   G4VPhysicalVolume* physical_metal_rod2;
+
+  G4Tubs* air_rod2;
+  G4LogicalVolume* logical_air_rod2;
+  G4VPhysicalVolume* physical_air_rod2;
 
   G4Tubs* metal_rod2bent;
   G4LogicalVolume* logical_metal_rod2bent;
@@ -116,6 +124,7 @@ private:
   G4VisAttributes* simpleIridiumVisAtt;
   G4VisAttributes* titaniumAttributes;
   G4VisAttributes* acetalAttributes;
+  G4VisAttributes* airAttributes;
  
   BrachyMaterial* pMat;    
 };
