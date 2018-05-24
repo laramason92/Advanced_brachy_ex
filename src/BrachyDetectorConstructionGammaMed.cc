@@ -71,6 +71,7 @@ BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
     air_ring(0),logical_air_ring(0),physical_air_ring(0),
     metal_rod1(0),logical_metal_rod1(0),physical_metal_rod1(0),
     metal_rod1_end(0),logical_metal_rod1_end(0),physical_metal_rod1_end(0),
+    metal_rod2_end(0),logical_metal_rod2_end(0),physical_metal_rod2_end(0),
     air_rod1(0),logical_air_rod1(0),physical_air_rod1(0),
     metal_rod2(0),logical_metal_rod2(0),physical_metal_rod2(0),
     air_rod2(0),logical_air_rod2(0),physical_air_rod2(0),
@@ -223,7 +224,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
 // Define the end of second metal rod of applicator to do get correct measurements
   G4double rod2r_end_min = 0.0 * mm;	
   G4double rod2r_end_max = 3.0 * mm;
-  G4double rod2_endoffset_x = 0.0 * mm;
+  G4double rod2_endoffset_x = rod2offset_x * mm;
   G4double rod2_endoffset_y = 0.0 * mm;
   G4double rod2_endoffset_z = -rod2_length/2.* mm;
   metal_rod2_end = new G4Sphere("metal_rod2_end",rod2r_end_min, rod2r_end_max/2,0.*deg,180.*deg,0.*deg,180.*deg);
@@ -330,6 +331,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   logical_metal_rod2bent -> SetVisAttributes(titaniumAttributes);
   logical_metal_ring -> SetVisAttributes(titaniumAttributes);
   logical_metal_rod1_end -> SetVisAttributes(titaniumAttributes);
+  logical_metal_rod2_end -> SetVisAttributes(titaniumAttributes);
  
   G4Colour  magenta (1.0, 0.0, 1.0) ; 
   G4Colour white (1.0, 1.0, 1.0) ;
@@ -418,6 +420,15 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
 
   delete metal_rod1_end; 
   metal_rod1_end = 0;
+  
+  delete physical_metal_rod2_end;
+  physical_metal_rod2_end = 0;
+ 
+  delete logical_metal_rod2_end; 
+  logical_metal_rod2_end = 0;
+
+  delete metal_rod2_end; 
+  metal_rod2_end = 0;
   
   delete physical_air_rod1;
   physical_air_rod1 = 0;

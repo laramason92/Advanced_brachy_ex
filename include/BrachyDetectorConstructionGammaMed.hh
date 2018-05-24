@@ -112,6 +112,10 @@ private:
   G4LogicalVolume* logical_metal_rod1_end;
   G4VPhysicalVolume* physical_metal_rod1_end;
 
+  G4Sphere* metal_rod2_end;
+  G4LogicalVolume* logical_metal_rod2_end;
+  G4VPhysicalVolume* physical_metal_rod2_end;
+
   G4Tubs* air_rod1;
   G4LogicalVolume* logical_air_rod1;
   G4VPhysicalVolume* physical_air_rod1;
