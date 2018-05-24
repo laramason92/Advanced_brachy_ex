@@ -46,6 +46,7 @@ class G4LogicalVolume;
 class G4Tubs;
 class G4Cons;
 class G4Torus;
+class G4Sphere;
 class G4VPhysicalVolume;
 class BrachyMaterial;
 class G4VisAttributes;
@@ -99,9 +100,17 @@ private:
   G4LogicalVolume* logical_plas_ring;
   G4VPhysicalVolume* physical_plas_ring;
 
+  G4Torus* air_ring;
+  G4LogicalVolume* logical_air_ring;
+  G4VPhysicalVolume* physical_air_ring;
+
   G4Tubs* metal_rod1;
   G4LogicalVolume* logical_metal_rod1;
   G4VPhysicalVolume* physical_metal_rod1;
+
+  G4Sphere* metal_rod1_end;
+  G4LogicalVolume* logical_metal_rod1_end;
+  G4VPhysicalVolume* physical_metal_rod1_end;
 
   G4Tubs* air_rod1;
   G4LogicalVolume* logical_air_rod1;
@@ -118,6 +127,10 @@ private:
   G4Tubs* metal_rod2bent;
   G4LogicalVolume* logical_metal_rod2bent;
   G4VPhysicalVolume* physical_metal_rod2bent;
+
+  G4Tubs* air_rod3;
+  G4LogicalVolume* logical_air_rod3;
+  G4VPhysicalVolume* physical_air_rod3;
 
   G4VisAttributes* steelAttributes;
   G4VisAttributes* endAttributes;

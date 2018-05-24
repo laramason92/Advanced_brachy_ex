@@ -48,6 +48,7 @@
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
 #include "G4Torus.hh"
+#include "G4Sphere.hh"
 #include "G4LogicalVolume.hh"
 #include "G4ThreeVector.hh"
 #include "G4PVPlacement.hh"
@@ -67,10 +68,14 @@ BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
     iridium_core(0),logical_iridium_core(0),physical_iridium_core(0),
     metal_ring(0),logical_metal_ring(0),physical_metal_ring(0),
     plas_ring(0),logical_plas_ring(0),physical_plas_ring(0),
+    air_ring(0),logical_air_ring(0),physical_air_ring(0),
     metal_rod1(0),logical_metal_rod1(0),physical_metal_rod1(0),
+    metal_rod1_end(0),logical_metal_rod1_end(0),physical_metal_rod1_end(0),
     air_rod1(0),logical_air_rod1(0),physical_air_rod1(0),
     metal_rod2(0),logical_metal_rod2(0),physical_metal_rod2(0),
+    air_rod2(0),logical_air_rod2(0),physical_air_rod2(0),
     metal_rod2bent(0),logical_metal_rod2bent(0),physical_metal_rod2bent(0),
+    air_rod3(0),logical_air_rod3(0),physical_air_rod3(0),
     steelAttributes(0), endAttributes(0), simpleIridiumVisAtt(0), titaniumAttributes(0)
 {
   pMat = new BrachyMaterial();
@@ -183,6 +188,16 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   rotationMatrixX90->rotateX(90.*deg);
   physical_metal_rod1 = new G4PVPlacement(0,G4ThreeVector(rod1offset_x,rod1offset_y,rod1offset_z), "phys_metal_rod1", logical_metal_rod1, mother, false, 0, true);//rot
 
+// Define the end of first metal rod of applicator to do get correct measurements
+  G4double rod1r_end_min = 0.0 * mm;	
+  G4double rod1r_end_max = 3.0 * mm;
+  G4double rod1_endoffset_x = 0.0 * mm;
+  G4double rod1_endoffset_y = 0.0 * mm;
+  G4double rod1_endoffset_z = -rod1_length/2.* mm;
+  metal_rod1_end = new G4Sphere("metal_rod1_end",rod1r_end_min, rod1r_end_max/2,0.*deg,180.*deg,0.*deg,180.*deg);
+  logical_metal_rod1_end = new G4LogicalVolume(metal_rod1_end, titaniumMat, "metal_rod1_end_log", 0, 0, 0);
+  physical_metal_rod1_end = new G4PVPlacement(rotationMatrixX90,G4ThreeVector(rod1_endoffset_x,rod1_endoffset_y,rod1_endoffset_z), "phys_metal_rod1_end", logical_metal_rod1_end, mother, false, 0, true);//rot
+
 // Define the air gap in the first metal rod
   G4double rod1r_air_min = 0.0 * mm;	
   G4double rod1r_air_max = 1.5 * mm;
@@ -205,6 +220,16 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   logical_metal_rod2 = new G4LogicalVolume(metal_rod2, titaniumMat, "metal_rod2_log", 0, 0, 0);
   physical_metal_rod2 = new G4PVPlacement(0,G4ThreeVector(rod2offset_x,rod2offset_y,rod2offset_z), "phys_metal_rod2", logical_metal_rod2, mother, false, 0, true);//rot
 
+// Define the end of second metal rod of applicator to do get correct measurements
+  G4double rod2r_end_min = 0.0 * mm;	
+  G4double rod2r_end_max = 3.0 * mm;
+  G4double rod2_endoffset_x = 0.0 * mm;
+  G4double rod2_endoffset_y = 0.0 * mm;
+  G4double rod2_endoffset_z = -rod2_length/2.* mm;
+  metal_rod2_end = new G4Sphere("metal_rod2_end",rod2r_end_min, rod2r_end_max/2,0.*deg,180.*deg,0.*deg,180.*deg);
+  logical_metal_rod2_end = new G4LogicalVolume(metal_rod2_end, titaniumMat, "metal_rod2_end_log", 0, 0, 0);
+  physical_metal_rod2_end = new G4PVPlacement(rotationMatrixX90,G4ThreeVector(rod2_endoffset_x,rod2_endoffset_y,rod2_endoffset_z), "phys_metal_rod2_end", logical_metal_rod2_end, mother, false, 0, true);//rot
+
 // Define the air gap in the second metal rod
   G4double rod2r_air_min = 0.0 * mm;	
   G4double rod2r_air_max = 1.5 * mm;
@@ -214,7 +239,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double rod2offset_air_z = 0.0 * mm;
   air_rod2 = new G4Tubs("air_rod2",rod2r_air_min, rod2r_air_max/2,rod2_air_length/2.,0.*deg,360.*deg);
   logical_air_rod2 = new G4LogicalVolume(air_rod2, airMat, "air_rod2_log", 0, 0, 0);
-  physical_air_rod2 = new G4PVPlacement(0,G4ThreeVector(rod2offset_air_x,rod2offset_air_y,rod2offset_air_z), "phys_air_rod1", logical_air_rod2, physical_metal_rod2, false, 0, true);
+  physical_air_rod2 = new G4PVPlacement(0,G4ThreeVector(rod2offset_air_x,rod2offset_air_y,rod2offset_air_z), "phys_air_rod2", logical_air_rod2, physical_metal_rod2, false, 0, true);
 
   G4double rod2bent_length = 60.0 * mm; 
   G4double rod2bentoffset_x = rod2offset_x - (rod2bent_length*0.49999999999999994)/2.0 * mm;//sin30
@@ -226,6 +251,17 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   metal_rod2bent = new G4Tubs("metal_rod2bent",rod2r_min, rod2r_max/2,rod2bent_length/2.,0.*deg,360.*deg);
   logical_metal_rod2bent = new G4LogicalVolume(metal_rod2bent, titaniumMat, "metal_rod2bent_log", 0, 0, 0);
   physical_metal_rod2bent = new G4PVPlacement(rotationMatrixX90Y30,G4ThreeVector(rod2bentoffset_x,rod2bentoffset_y,rod2bentoffset_z), "phys_metal_rod2bent", logical_metal_rod2bent, mother, false, 0, true);
+
+// Define the air gap in the bent metal rod
+  G4double rod3r_air_min = 0.0 * mm;	
+  G4double rod3r_air_max = 1.5 * mm;
+  G4double rod3_air_length = 60.0 * mm; 
+  G4double rod3offset_air_x = 0.0 * mm;
+  G4double rod3offset_air_y = 0.0 * mm;
+  G4double rod3offset_air_z = 0.0 * mm;
+  air_rod3 = new G4Tubs("air_rod3",rod3r_air_min, rod3r_air_max/2,rod3_air_length/2.,0.*deg,360.*deg);
+  logical_air_rod3 = new G4LogicalVolume(air_rod3, airMat, "air_rod3_log", 0, 0, 0);
+  physical_air_rod3 = new G4PVPlacement(0,G4ThreeVector(rod3offset_air_x,rod3offset_air_y,rod3offset_air_z), "phys_air_rod3", logical_air_rod3, physical_metal_rod2bent, false, 0, true);
 
 // Define the plastic ring of applicator to do get correct measurements
   G4double plas_ringr_min = 0.0 * mm;	
@@ -255,6 +291,19 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   logical_metal_ring = new G4LogicalVolume(metal_ring, titaniumMat, "metal_ring_log", 0, 0, 0);
   physical_metal_ring = new G4PVPlacement(0,G4ThreeVector(ringoffset_x,ringoffset_y,ringoffset_z), "phys_metal_ring", logical_metal_ring, physical_plas_ring, false, 0, true); //Geant is clever - if this ring lives inside the plastic one then it automatically take on the rotation that I have applied to the plastic ring
 
+// Define the air ring of applicator to do get correct measurements
+  G4double air_ringr_min = 0.0 * mm;	
+  G4double air_ringr_max = 1.5 * mm;
+  G4double air_ring_diameter = 32.0 * mm; 
+  //G4double ringphi_min = 0. *deg;
+  //G4double ringphi_max = 360. *deg;
+  G4double air_ringoffset_x = 0.0 * mm;// 0.5 = sin30
+  G4double air_ringoffset_y = 0.0 * mm;
+  G4double air_ringoffset_z = 0.0 * mm;
+  air_ring = new G4Torus("air_ring",air_ringr_min, air_ringr_max/2,air_ring_diameter/2,0.*deg,360.*deg);
+  logical_air_ring = new G4LogicalVolume(air_ring, airMat, "air_ring_log", 0, 0, 0);
+  physical_air_ring = new G4PVPlacement(0,G4ThreeVector(air_ringoffset_x,air_ringoffset_y,air_ringoffset_z), "phys_air_ring", logical_air_ring, physical_metal_ring, false, 0, true); //Geant is clever - if this ring lives inside the plastic one then it automatically take on the rotation that I have applied to the plastic ring
+
 
 // Visualisations
 
@@ -280,6 +329,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   logical_metal_rod2 -> SetVisAttributes(titaniumAttributes);
   logical_metal_rod2bent -> SetVisAttributes(titaniumAttributes);
   logical_metal_ring -> SetVisAttributes(titaniumAttributes);
+  logical_metal_rod1_end -> SetVisAttributes(titaniumAttributes);
  
   G4Colour  magenta (1.0, 0.0, 1.0) ; 
   G4Colour white (1.0, 1.0, 1.0) ;
@@ -299,6 +349,8 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   airAttributes -> SetForceAuxEdgeVisible(true);//SetForceWireframe(true);//
   logical_air_rod1 -> SetVisAttributes(airAttributes);
   logical_air_rod2 -> SetVisAttributes(airAttributes);
+  logical_air_rod3 -> SetVisAttributes(airAttributes);
+  logical_air_ring -> SetVisAttributes(airAttributes);
 
 }
 
@@ -358,6 +410,15 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
   delete metal_rod1; 
   metal_rod1 = 0;
   
+  delete physical_metal_rod1_end;
+  physical_metal_rod1_end = 0;
+ 
+  delete logical_metal_rod1_end; 
+  logical_metal_rod1_end = 0;
+
+  delete metal_rod1_end; 
+  metal_rod1_end = 0;
+  
   delete physical_air_rod1;
   physical_air_rod1 = 0;
  
@@ -393,6 +454,24 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
 
   delete metal_rod2bent; 
   metal_rod2bent = 0;
+  
+  delete physical_air_rod3;
+  physical_air_rod3 = 0;
+ 
+  delete logical_air_rod3; 
+  logical_air_rod3 = 0;
+
+  delete air_rod3; 
+  air_rod3 = 0;
+  
+  delete physical_air_ring;
+  physical_air_ring = 0;
+ 
+  delete logical_air_ring; 
+  logical_air_ring = 0;
+
+  delete air_ring; 
+  air_ring = 0;
   
   delete physical_End2_steel_shell; 
   physical_End2_steel_shell = 0;
