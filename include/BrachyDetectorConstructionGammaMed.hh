@@ -45,6 +45,7 @@
 class G4LogicalVolume;
 class G4Tubs;
 class G4Cons;
+class G4Torus;
 class G4VPhysicalVolume;
 class BrachyMaterial;
 class G4VisAttributes;
@@ -90,6 +91,14 @@ private:
   G4LogicalVolume* logical_iridium_core;
   G4VPhysicalVolume* physical_iridium_core;
 
+  G4Torus* metal_ring;
+  G4LogicalVolume* logical_metal_ring;
+  G4VPhysicalVolume* physical_metal_ring;
+
+  G4Torus* plas_ring;
+  G4LogicalVolume* logical_plas_ring;
+  G4VPhysicalVolume* physical_plas_ring;
+
   G4Tubs* metal_rod1;
   G4LogicalVolume* logical_metal_rod1;
   G4VPhysicalVolume* physical_metal_rod1;
@@ -106,6 +115,7 @@ private:
   G4VisAttributes* endAttributes;
   G4VisAttributes* simpleIridiumVisAtt;
   G4VisAttributes* titaniumAttributes;
+  G4VisAttributes* acetalAttributes;
  
   BrachyMaterial* pMat;    
 };

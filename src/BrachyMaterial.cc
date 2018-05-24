@@ -144,6 +144,13 @@ void BrachyMaterial::DefineMaterials()
   A = 47.88*g/mole;
   d = 4.50*g/cm3;
   Titanium = new G4Material("titanium" ,Z = 22.,A,d);
+
+  //acetal https://pubchem.ncbi.nlm.nih.gov/compound/Acetal#section=Top
+  A = 118.176*g/mole;
+  d = 1.41*g/cm3;
+  Z = 66;
+  Acetal = new G4Material("acetal" ,Z,A,d);
+
  
   // Air material
   d = 1.290*mg/cm3;

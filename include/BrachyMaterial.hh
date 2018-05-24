@@ -69,5 +69,6 @@ private:
   G4Material*Vacuum; 
   G4Material* bone;
   G4Material* muscle;
+  G4Material* Acetal;
 };
 #endif
