@@ -41,6 +41,7 @@ BrachyAnalysisManager::BrachyAnalysisManager()
 {
 #ifdef ANALYSIS_USE
  theTFile = 0;
+ histo3 =0;
  histo2 =0;
  histo = 0;
 #endif
@@ -50,6 +51,7 @@ BrachyAnalysisManager::~BrachyAnalysisManager()
 { 
 #ifdef G4ANALYSIS_USE
  delete theTFile; theTFile = 0;
+ delete histo3; histo3 = 0;
  delete histo2; histo2 = 0;
  delete histo; histo = 0;
 #endif
@@ -70,6 +72,8 @@ void BrachyAnalysisManager::book()
  histo = new TH1F("h10","energy spectrum", 800, 0., 800);
  histo2 = new TH2F("h20","edep2Dxy", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
 				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
+ histo3 = new TH2F("h30","kerma2Dxy", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
+				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
 #endif 
  }
 
@@ -79,6 +83,13 @@ void BrachyAnalysisManager::FillH2WithEnergyDeposition(G4double xx,
                                                      G4double energyDep)
 {
   histo2 -> Fill(xx, yy,energyDep);
+}
+
+void BrachyAnalysisManager::FillH3WithKerma(G4double xx,
+                                            G4double yy,
+                                            G4double Kerma)
+{
+  histo3 -> Fill(xx, yy, Kerma);
 }
 
 void BrachyAnalysisManager::FillPrimaryParticleHistogram(G4double primaryParticleEnergy)

@@ -75,6 +75,12 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
           G4double eKinVertex = theTrack->GetVertexKineticEnergy(); // Ekin at vertex
           G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass();
           G4double kerma = eKinVertex / mass;
+          G4StepPoint* p1 = aStep->GetPreStepPoint();
+          G4ThreeVector coord1 = p1->GetPosition();
+          G4double xpos_kerma = coord1.x();
+          G4double ypos_kerma = coord1.y();
+          G4double zpos_kerma = coord1.z();
+          G4cout << "vals" << ypos_kerma << kerma << G4endl;
        }
   }
      
