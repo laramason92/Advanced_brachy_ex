@@ -69,7 +69,15 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
 
   // check if it is alive
   if(theTrack-> GetTrackStatus() == fAlive) {return;}
-   
+  // Get KERMA
+  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a particle
+       if (theTrack->GetCurrentStepNumber()==1){//child of a primary
+          G4double eKinVertex = theTrack->GetVertexKineticEnergy(); // Ekin at vertex
+          G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass();
+          G4double kerma = eKinVertex / mass;
+       }
+  }
+     
   // G4cout << "Start secondariessss" << G4endl;  
   // Retrieve the secondary particles
   G4TrackVector* fSecondary = steppingManager -> GetfSecondary();
@@ -78,13 +86,14 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
    { 
      // Retrieve particle
      const G4ParticleDefinition* particleName = (*fSecondary)[lp1] -> GetDefinition();     
+     
 
      if (particleName == G4Gamma::Definition())
      {
       G4String process = (*fSecondary)[lp1]-> GetCreatorProcess()-> GetProcessName();  
       
       // Retrieve the process originating it
-      // G4cout << "creator process " << process << G4endl;
+      //G4cout << "creator process " << process << G4endl;
         if (process == "RadioactiveDecay")
          {
 #ifdef ANALYSIS_USE  
