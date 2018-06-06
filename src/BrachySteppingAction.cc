@@ -72,15 +72,25 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   // Get KERMA
   if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a particle
        if (theTrack->GetCurrentStepNumber()==1){//child of a primary
-          G4double eKinVertex = theTrack->GetVertexKineticEnergy(); // Ekin at vertex
-          G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass();
-          G4double kerma = eKinVertex / mass;
+          G4double eKinVertex = theTrack->GetVertexKineticEnergy()/MeV; // Ekin at vertex, divide by MeV to put the units as MeV
+          G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
+          G4double kerma = eKinVertex / mass *6.24150e+12; // * 6.24... to get to joules so now kerma is in joules/kg
           G4StepPoint* p1 = aStep->GetPreStepPoint();
           G4ThreeVector coord1 = p1->GetPosition();
-          G4double xpos_kerma = coord1.x();
-          G4double ypos_kerma = coord1.y();
-          G4double zpos_kerma = coord1.z();
-          G4cout << "vals" << ypos_kerma << kerma << G4endl;
+          G4double xpos_kerma = coord1.x()/cm;
+          G4double ypos_kerma = coord1.y()/cm;
+          G4double zpos_kerma = coord1.z()/cm;
+          //G4cout << "vals" << ypos_kerma << kerma << G4endl;
+#ifdef ANALYSIS_USE  
+          BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
+          if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
+                               if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm && xpos_kerma> -0.125 *mm && xpos_kerma < 0.125*mm) G4cout << ypos_kerma << "     " << kerma << G4endl;
+        }
+          //ofstream myfile;
+          //myfile.open ("Kerma.txt");
+          //myfile << ypos_kerma <<  "     " << kerma << "\n";
+          //myfile.close();
+#endif
        }
   }
      

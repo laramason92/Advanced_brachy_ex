@@ -81,7 +81,7 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
  // It is possible to modify geometrical parameters through UI
  detectorMessenger = new BrachyDetectorMessenger(this);
 
-  // Define the Flexi source as default source modelled in the geometry
+  // Define the GammaMed source as default source modelled in the geometry
  factory = new BrachyFactoryGammaMed();
 
   // BrachyMaterial defined the all the materials necessary
