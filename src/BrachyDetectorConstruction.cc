@@ -43,6 +43,7 @@
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
 #include "G4Box.hh"
+#include "G4Sphere.hh"
 #include "G4LogicalVolume.hh"
 #include "G4ThreeVector.hh"
 #include "G4PVPlacement.hh"
@@ -68,14 +69,15 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
   phantomAbsorberMaterial(0)
 {
  // Define half size of the phantom along the x, y, z axis
- phantomSizeX = 150.*cm;
- phantomSizeY = 150.*cm;
- phantomSizeZ = 150.*cm;
- 
+ //phantomSizeX = 150.*cm;
+ //phantomSizeY = 150.*cm;
+ //phantomSizeZ = 150.*cm;
+ phantomDiameter = 500.*cm;
+
  // Define the sizes of the World volume containing the phantom
- worldSizeX = 4.0*m;
- worldSizeY = 4.0*m;
- worldSizeZ = 4.0*m;
+ worldSizeX = 5.0*m;
+ worldSizeY = 5.0*m;
+ worldSizeZ = 5.0*m;
 
  // Define the messenger of the Detector component
  // It is possible to modify geometrical parameters through UI
@@ -175,17 +177,18 @@ void BrachyDetectorConstruction::ConstructPhantom()
   
   G4Material* air = pMaterial -> GetMat("Air") ;
   G4Material* water = pMaterial -> GetMat("Water");
+  G4Material* vacuum = pMaterial -> GetMat("Galactic");
 
   // World volume
   World = new G4Box("World",worldSizeX,worldSizeY,worldSizeZ);
-  WorldLog = new G4LogicalVolume(World,air,"WorldLog",0,0,0);
+  WorldLog = new G4LogicalVolume(World,vacuum,"WorldLog",0,0,0);
   WorldPhys = new G4PVPlacement(0,G4ThreeVector(),"WorldPhys",WorldLog,0,false,0);
 
   // Water Box
-  Phantom = new G4Box("Phantom",phantomSizeX,phantomSizeY,phantomSizeZ);
-
+  //Phantom = new G4Box("Phantom",phantomSizeX,phantomSizeY,phantomSizeZ);
+  Phantom = new G4Sphere("Phantom",0.,phantomDiameter/2.,0.,360.*deg,0.,180.*deg);
   // Logical volume
-  PhantomLog = new G4LogicalVolume(Phantom,water,"PhantomLog",0,0,0);
+  PhantomLog = new G4LogicalVolume(Phantom,air,"PhantomLog",0,0,0);
 
   // Physical volume
   PhantomPhys = new G4PVPlacement(0,G4ThreeVector(), // Position: rotation and translation
@@ -204,14 +207,22 @@ void BrachyDetectorConstruction::ConstructPhantom()
 
 void BrachyDetectorConstruction::PrintDetectorParameters()
 {
+  //G4cout << "----------------" << G4endl
+         //<< "the phantom is a water box whose size is: " << G4endl
+         //<< phantomSizeX *2./cm
+         //<< " cm * "
+         //<< phantomSizeY *2./cm
+         //<< " cm * "
+         //<< phantomSizeZ *2./cm
+         //<< " cm" << G4endl
+         //<< "The phantom is made of "
+         //<< phantomAbsorberMaterial -> GetName() <<G4endl
+         //<< "the source is at the center of the phantom" << G4endl
+         //<< "----------------"
+         //<< G4endl;
   G4cout << "----------------" << G4endl
-         << "the phantom is a water box whose size is: " << G4endl
-         << phantomSizeX *2./cm
-         << " cm * "
-         << phantomSizeY *2./cm
-         << " cm * "
-         << phantomSizeZ *2./cm
-         << " cm" << G4endl
+         << "the phantom is an air sphere whose size is: " << G4endl
+         << phantomDiameter/cm
          << "The phantom is made of "
          << phantomAbsorberMaterial -> GetName() <<G4endl
          << "the source is at the center of the phantom" << G4endl

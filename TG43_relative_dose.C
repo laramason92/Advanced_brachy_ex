@@ -26,29 +26,18 @@ for (int i=0; i <401; i++)
  Voxels[i]=0.;
 }
 
-ofstream myfile;
-myfile.open ("Kerma.txt");
-
 //Build Energy Deposition Map
 for (int k=0; k< numberOfBins; k++)
  {
    for (int m=0; m< numberOfBins; m++) 
  {
    Double_t xx_histo = h20.GetXaxis()->GetBinCenter(k);
-   Double_t xx_histo3 = h30.GetXaxis()->GetBinCenter(k);
    Double_t yy_histo = h20.GetYaxis()->GetBinCenter(m);
-   Double_t yy_histo3 = h30.GetYaxis()->GetBinCenter(m);
    Double_t edep_histo=h20.GetBinContent(k, m);
-   Double_t kerma_histo3=h30.GetBinContent(k,m)
    radius = sqrt(xx_histo*xx_histo+yy_histo*yy_histo);
  //  if ((edep_histo!=0) && radius < 12. && radius > 9) std::cout << "histo: " << xx_histo << ", " << yy_histo 
    //                                                             << ", radius: " << radius <<", edep: "<< edep_histo << std::endl;
 
-   if (kerma_histo3 !=0) {cout << yy_histo3 << "     " << kerma_histo3 << endl;
-                         }
-   
-   if (kerma_histo3 !=0) {myfile << yy_histo3 <<  "     " << kerma_histo3 << "\n";
-                         }
     if (radius != 0){
 		      radInt = TMath::Nint(4*radius);
 		      if ((radInt>0)&&(radInt<=400))
@@ -62,6 +51,20 @@ for (int k=0; k< numberOfBins; k++)
 
 }}
 
+
+ofstream myfile;
+myfile.open ("Kerma.txt");
+for (int j=2; j<100; j++)
+ { 
+   Double_t yy_histo3 = h30.GetYaxis()->GetBinCenter(j);
+   Double_t kerma_histo3=h30.GetBinContent(0,j)
+  
+   cout << yy_histo3 << "kerma     " << kerma_histo3 << endl;
+                         
+   
+   if (kerma_histo3 !=0) {myfile << yy_histo3 <<  "     " << kerma_histo3 << "\n";
+ }                        }
+}
 myfile.close();
 
 std::cout << "Energy Map Complete" << std::endl;

@@ -41,6 +41,8 @@ BrachyAnalysisManager::BrachyAnalysisManager()
 {
 #ifdef ANALYSIS_USE
  theTFile = 0;
+ histo5 =0;
+ histo4 =0;
  histo3 =0;
  histo2 =0;
  histo = 0;
@@ -51,6 +53,8 @@ BrachyAnalysisManager::~BrachyAnalysisManager()
 { 
 #ifdef G4ANALYSIS_USE
  delete theTFile; theTFile = 0;
+ delete histo5; histo5 = 0;
+ delete histo4; histo4 = 0;
  delete histo3; histo3 = 0;
  delete histo2; histo2 = 0;
  delete histo; histo = 0;
@@ -72,8 +76,12 @@ void BrachyAnalysisManager::book()
  histo = new TH1F("h10","energy spectrum", 800, 0., 800);
  histo2 = new TH2F("h20","edep2Dxy", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
 				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
- histo3 = new TH2F("h30","kerma2Dxy", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
-				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
+ histo3 = new TH2F("h30","kerma2Dxy", 2000, -1000.5, 1000.5, // binning, xmin, xmax, along x direction in mm WANT 1MM THICK BINS
+				     2000, -1000.5, 1000.5);// binning, ymin, ymax, along y direction in mm
+ histo4 = new TH2F("h40","edep2Dxy_smol", 2000, -100.5, 100.5, // binning, xmin, xmax, along x direction in mm
+				     2000, -100.5, 100.5);// binning, ymin, ymax, along y direction in mm
+ histo5 = new TH2F("h50","kerma2Dxy_smol", 2000, -100.5, 100.5, // binning, xmin, xmax, along x direction in mm WANT 1MM THICK BINS
+				     2000, -100.5, 100.5);// binning, ymin, ymax, along y direction in mm
 #endif 
  }
 
@@ -91,6 +99,21 @@ void BrachyAnalysisManager::FillH3WithKerma(G4double xx,
 {
   histo3 -> Fill(xx, yy, Kerma);
 }
+
+void BrachyAnalysisManager::FillH4WithEnergyDeposition(G4double xx,
+                                                     G4double yy, 
+                                                     G4double energyDep)
+{
+  histo4 -> Fill(xx, yy,energyDep);
+}
+
+void BrachyAnalysisManager::FillH5WithKerma(G4double xx,
+                                            G4double yy,
+                                            G4double Kerma)
+{
+  histo5 -> Fill(xx, yy, Kerma);
+}
+
 
 void BrachyAnalysisManager::FillPrimaryParticleHistogram(G4double primaryParticleEnergy)
 {

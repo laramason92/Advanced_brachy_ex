@@ -63,6 +63,13 @@ public:
   
   void FillH3WithKerma(G4double xx,G4double yy, G4double Kerma);
 
+  void FillH4WithEnergyDeposition(G4double xx,G4double yy, G4double energyDep);
+  // Method to fill the 2D histogram with the energy deposition, integrated over a run, in each voxel
+  // of the scoring mesh. The scoring mesh is in the plane containing the source.
+  
+  void FillH5WithKerma(G4double xx,G4double yy, G4double Kerma);
+
+
  void FillPrimaryParticleHistogram(G4double);
   // Energy spectrum of primary particles
 #endif
@@ -79,6 +86,8 @@ private:
     TH1F* histo;
     TH2F* histo2;
     TH2F* histo3;
+    TH2F* histo4;
+    TH2F* histo5;
 #endif
 };
 #endif
