@@ -77,14 +77,14 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
           G4double kerma = eKinVertex / mass *6.24150e+12*100; // * 6.24... to get to joules so now kerma is in joules/kg=Gy, *100 to get to cGy
           G4StepPoint* p1 = aStep->GetPreStepPoint();
           G4ThreeVector coord1 = p1->GetPosition();
-          G4double xpos_kerma = coord1.x()/mm;
-          G4double ypos_kerma = coord1.y()/mm;
-          G4double zpos_kerma = coord1.z()/mm;
+          G4double xpos_kerma = coord1.x()/cm;
+          G4double ypos_kerma = coord1.y()/cm;
+          G4double zpos_kerma = coord1.z()/cm;
           //G4cout << "vals" << ypos_kerma << kerma << G4endl;
 #ifdef ANALYSIS_USE  
           BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
-          if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);//this zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm makes sure we only get the plane that the source is in (the source is lying on the xy plane and has a finite z thickness
-          if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);//this zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm makes sure we only get the plane that the source is in (the source is lying on the xy plane and has a finite z thickness
+          if(zpos_kerma> -0.0125 *cm && zpos_kerma < 0.0125*cm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);//this zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm makes sure we only get the plane that the source is in (the source is lying on the xy plane and has a finite z thickness
+          if(zpos_kerma> -0.0125 *cm && zpos_kerma < 0.0125*cm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);//this zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm makes sure we only get the plane that the source is in (the source is lying on the xy plane and has a finite z thickness
 
         }                       //if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm && xpos_kerma> -0.125 *mm && xpos_kerma < 0.125*mm) G4cout << ypos_kerma << "     " << kerma << G4endl;
         }

@@ -76,12 +76,12 @@ void BrachyAnalysisManager::book()
  histo = new TH1F("h10","energy spectrum", 800, 0., 800);
  histo2 = new TH2F("h20","edep2Dxy", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
 				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
- histo3 = new TH2F("h30","kerma2Dxy", 2001, -1005, 1005, // binning, xmin, xmax, along x direction in mm WANT 1MM THICK BINS
-				     2001, -1005, 1005);// binning, ymin, ymax, along y direction in mm
+ histo3 = new TH2F("h30","kerma2Dxy", 201, -105, 105, // binning, xmin, xmax, along x direction in cm WANT 1CM THICK BINS
+				     201, -105, 105);// binning, ymin, ymax, along y direction in cm
  histo4 = new TH2F("hgeom","edep2Dxy_smol", 801, -10.125, 10.125, // binning, xmin, xmax, along x direction in mm
 				     801, -10.125, 10.125);// binning, ymin, ymax, along y direction in mm
- histo5 = new TH2F("h50","kerma2Dxy_smol", 2001, -105, 105, // binning, xmin, xmax, along x direction in mm WANT 1MM THICK BINS
-				     2001, -105, 105);// binning, ymin, ymax, along y direction in mm
+ histo5 = new TH2F("h50","kerma2Dxy_smol", 201, -10.5, 10.5, // binning, xmin, xmax, along x direction in cm WANT 1CM THICK BINS
+				     201, -10.5, 10.5);// binning, ymin, ymax, along y direction in cm
 #endif 
  }
 
