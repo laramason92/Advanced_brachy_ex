@@ -133,7 +133,7 @@ for(int x = 0; x < fNMeshSegments[0]; x++) {
        BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
    
        if(zz> -0.125 *mm && zz < 0.125*mm) analysis -> FillH2WithEnergyDeposition(xx,yy, (value->second->sum_wx())/keV);
-       if(zz> -0.125 *mm && zz < 0.125*mm) analysis -> FillH4WithEnergyDeposition(xx,yy, (value->second->sum_wx())/keV);
+       if(xx> -0.125 *mm && xx < 0.125*mm) analysis -> FillHGeomWithEnergyDeposition(yy,zz, (value->second->sum_wx())/keV);
 #endif
 }}}} 
 

@@ -74,7 +74,7 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
        if (theTrack->GetCurrentStepNumber()==1){//child of a primary
           G4double eKinVertex = theTrack->GetVertexKineticEnergy()/MeV; // Ekin at vertex, divide by MeV to put the units as MeV
           G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
-          G4double kerma = eKinVertex / mass *6.24150e+12; // * 6.24... to get to joules so now kerma is in joules/kg
+          G4double kerma = eKinVertex / mass *6.24150e+12*100; // * 6.24... to get to joules so now kerma is in joules/kg=Gy, *100 to get to cGy
           G4StepPoint* p1 = aStep->GetPreStepPoint();
           G4ThreeVector coord1 = p1->GetPosition();
           G4double xpos_kerma = coord1.x()/mm;
