@@ -78,8 +78,8 @@ void BrachyAnalysisManager::book()
 				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
  histo3 = new TH2F("h30","kerma2Dxy", 201, -105, 105, // binning, xmin, xmax, along x direction in cm WANT 1CM THICK BINS
 				     201, -105, 105);// binning, ymin, ymax, along y direction in cm
- histo4 = new TH2F("hgeom","edep2Dxy_smol", 801, -10.125, 10.125, // binning, xmin, xmax, along x direction in mm
-				     801, -10.125, 10.125);// binning, ymin, ymax, along y direction in mm
+ histo4 = new TH2F("hgeom","edep2Dzy", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
+				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
  histo5 = new TH2F("h50","kerma2Dxy_smol", 201, -10.5, 10.5, // binning, xmin, xmax, along x direction in cm WANT 1CM THICK BINS
 				     201, -10.5, 10.5);// binning, ymin, ymax, along y direction in cm
 #endif 
@@ -100,11 +100,11 @@ void BrachyAnalysisManager::FillH3WithKerma(G4double xx,
   histo3 -> Fill(xx, yy, Kerma);
 }
 
-void BrachyAnalysisManager::FillHGeomWithEnergyDeposition(G4double yy,
-                                                     G4double zz, 
+void BrachyAnalysisManager::FillHGeomWithEnergyDeposition(G4double zz,
+                                                     G4double yy, 
                                                      G4double energyDep)
 {
-  histo4 -> Fill(yy, zz,energyDep);
+  histo4 -> Fill(zz, yy,energyDep);
 }
 
 void BrachyAnalysisManager::FillH5WithKerma(G4double xx,

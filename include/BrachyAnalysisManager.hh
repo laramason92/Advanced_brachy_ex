@@ -63,7 +63,7 @@ public:
   
   void FillH3WithKerma(G4double xx,G4double yy, G4double Kerma);
 
-  void FillHGeomWithEnergyDeposition(G4double yy,G4double zz, G4double energyDep);
+  void FillHGeomWithEnergyDeposition(G4double zz,G4double yy, G4double energyDep);
   // Method to fill the 2D histogram with the energy deposition, integrated over a run, in each voxel
   // of the scoring mesh. The scoring mesh is in the plane containing the source.
   
