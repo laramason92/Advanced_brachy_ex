@@ -59,6 +59,7 @@ private:
   G4Material* matir192;
   G4Material* Titanium;
   G4Material* matAir;
+  G4Material* matDryAir;
   G4Material* matH2O;
   G4Material* soft;
   G4Material* matsteel;

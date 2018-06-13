@@ -65,6 +65,9 @@ void BrachyMaterial::DefineMaterials()
   A = 1.01*g/mole;
   G4Element* elH = new G4Element ("Hydrogen","H",Z = 1.,A);
   
+  A = 39.948*g/mole;
+  G4Element* elAr = new G4Element ("Argon","Ar",Z = 18.,A);
+  
   A = 14.01*g/mole;
   G4Element* elN = new G4Element("Nitrogen","N",Z = 7.,A);
 
@@ -151,7 +154,14 @@ void BrachyMaterial::DefineMaterials()
   Z = 66;
   Acetal = new G4Material("acetal" ,Z,A,d);
 
+  // Dry air material
+  d = 1.2928*mg/cm3;
+  matDryAir = new G4Material("DryAir",d,3);
+  matDryAir->AddElement(elN,0.7557);
+  matDryAir->AddElement(elO,0.2315);
+  matDryAir->AddElement(elAr,0.0128);
  
+
   // Air material
   d = 1.290*mg/cm3;
   matAir = new G4Material("Air",d,2);

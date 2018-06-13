@@ -70,17 +70,17 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   // check if it is alive
   if(theTrack-> GetTrackStatus() == fAlive) {return;}
   // Get KERMA
-  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a particle
-       if (theTrack->GetCurrentStepNumber()==1){//child of a primary
+  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary particle
+       if (theTrack->GetCurrentStepNumber()==1){//just been prod
           G4double eKinVertex = theTrack->GetVertexKineticEnergy()/MeV; // Ekin at vertex, divide by MeV to put the units as MeV
           G4double mass_kg = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
 
-          G4double eKinVertex_joules = eKinVertex*1.60218e-13;
-
-          G4double kerma = eKinVertex_joules / mass_kg * 10.0 * 3.7e10 * 1 *2.363 * 3600 * 100; // (J/kg = Gy )* Ci * Bq/Ci * decay/s * photons/decay * sec/hour * 100 to get to cGy/h
+          //G4double eKinVertex_joules = eKinVertex*1.60218e-13;
+          G4double kerma = eKinVertex / mass_kg;
+          //G4double kerma = eKinVertex_joules / mass_kg * 10.0 * 3.7e10 * 1 *2.363 * 3600 * 100; // (J/kg = Gy )* Ci * Bq/Ci * decay/s * photons/decay * sec/hour * 100 to get to cGy/h
 
           G4StepPoint* p1 = aStep->GetPreStepPoint();
-          G4ThreeVector coord1 = p1->GetPosition();
+          G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
           G4double xpos_kerma = coord1.x()/cm;
           G4double ypos_kerma = coord1.y()/cm;
           G4double zpos_kerma = coord1.z()/cm;

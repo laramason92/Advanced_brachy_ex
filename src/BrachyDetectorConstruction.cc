@@ -75,9 +75,9 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
  phantomDiameter = 500.*cm;
 
  // Define the sizes of the World volume containing the phantom
- worldSizeX = 5.0*m;
- worldSizeY = 5.0*m;
- worldSizeZ = 5.0*m;
+ worldSizeX = 50.0*m;
+ worldSizeY = 50.0*m;
+ worldSizeZ = 50.0*m;
 
  // Define the messenger of the Detector component
  // It is possible to modify geometrical parameters through UI
@@ -175,6 +175,7 @@ void BrachyDetectorConstruction::ConstructPhantom()
   // Define the light blue color
   G4Colour  lblue   (0.0, 0.0, .75);
   
+  G4Material* dryair = pMaterial -> GetMat("DryAir") ;
   G4Material* air = pMaterial -> GetMat("Air") ;
   G4Material* water = pMaterial -> GetMat("Water");
   G4Material* vacuum = pMaterial -> GetMat("Galactic");
@@ -188,7 +189,7 @@ void BrachyDetectorConstruction::ConstructPhantom()
   //Phantom = new G4Box("Phantom",phantomSizeX,phantomSizeY,phantomSizeZ);
   Phantom = new G4Sphere("Phantom",0.,phantomDiameter/2.,0.,360.*deg,0.,180.*deg);
   // Logical volume
-  PhantomLog = new G4LogicalVolume(Phantom,air,"PhantomLog",0,0,0);
+  PhantomLog = new G4LogicalVolume(Phantom,dryair,"PhantomLog",0,0,0);
 
   // Physical volume
   PhantomPhys = new G4PVPlacement(0,G4ThreeVector(), // Position: rotation and translation
