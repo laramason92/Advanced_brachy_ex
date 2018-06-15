@@ -64,42 +64,76 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
 // Retrieve the spectrum of gamma emitted in the Radioactive Decay
 // and store it in a 1D histogram
 
+  //The following code is with help from Dr Patrik Eschle <patrik.eschle@zhaw.ch>, who himself cites help using GetSecondaryInCurrentStep  from Tianyu Liu <kingcrimsontianyu@gmail.com>
   G4SteppingManager*  steppingManager = fpSteppingManager;
   G4Track* theTrack = aStep-> GetTrack();
+  G4int id = theTrack->GetTrackID();
+  G4double charge = theTrack->GetParticleDefinition()->GetPDGCharge();
+  
+  // check if it is alive - we want it to be alive
+  if(theTrack-> GetTrackStatus() != fAlive) {return;} //WHAT SHOULD THIS BE?! != OR ==?????????
 
-  // check if it is alive
-  if(theTrack-> GetTrackStatus() == fAlive) {return;}
   // Get KERMA
-  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary particle
-       if (theTrack->GetCurrentStepNumber()==1){//just been prod
-          G4double eKinVertex = theTrack->GetVertexKineticEnergy()/MeV; // Ekin at vertex, divide by MeV to put the units as MeV
-          G4double mass_kg = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
 
-          //G4double eKinVertex_joules = eKinVertex*1.60218e-13;
-          G4double kerma = eKinVertex / mass_kg;
-          //G4double kerma = eKinVertex_joules / mass_kg * 10.0 * 3.7e10 * 1 *2.363 * 3600 * 100; // (J/kg = Gy )* Ci * Bq/Ci * decay/s * photons/decay * sec/hour * 100 to get to cGy/h
+  //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary particle
+  //     if (theTrack->GetCurrentStepNumber()==1){//just been prod
+  //        G4double eKinVertex = theTrack->GetVertexKineticEnergy()/MeV; // Ekin at vertex, divide by MeV to put the units as MeV
+  //        G4double mass_g = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/g;
+  //
+  //        G4double kerma = eKinVertex / mass_g;
+  //
+  //        G4StepPoint* p1 = aStep->GetPreStepPoint();
+  //        G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
+  //        G4double xpos_kerma = coord1.x()/mm;
+  //        G4double ypos_kerma = coord1.y()/mm;
+  //        G4double zpos_kerma = coord1.z()/mm;
 
-          G4StepPoint* p1 = aStep->GetPreStepPoint();
-          G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
-          G4double xpos_kerma = coord1.x()/cm;
-          G4double ypos_kerma = coord1.y()/cm;
-          G4double zpos_kerma = coord1.z()/cm;
-          //G4cout << "vals" << ypos_kerma << kerma << G4endl;
+  if (id ==1 && charge ==0.0){ //primary photon
+     const std::vector<const G4Track*>* secondaryList = aStep->GetSecondaryInCurrentStep();
+     for (auto it = secondaryList->begin(); it != secondaryList->end(); ++it)
+     {
+         G4double secondaryCharge = (*it)->GetParticleDefinition()->GetPDGCharge();
+         // score if the secondary particle is charged particle
+         if(secondaryCharge != 0.0)
+         {
+            G4double eKin  = (*it)->GetKineticEnergy()/MeV;
+            
+            G4StepPoint* p1 = aStep->GetPreStepPoint();
+
+            //G4double density = aStep->GetPreStepPoint()->GetMaterial()->GetDensity();
+            //G4double volume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume();
+            //ResolveSolid(aStep);
+            //G4double mass = density * volume;
+            G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
+
+            G4double kerma = eKin / mass;
+            kerma *= aStep->GetPreStepPoint()->GetWeight();
+
+            G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
+            G4double xpos_kerma = coord1.x(); //should have mm here or no?????????
+            G4double ypos_kerma = coord1.y();
+            G4double zpos_kerma = coord1.z();
+
+
 #ifdef ANALYSIS_USE  
-          BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
-          if(zpos_kerma> -0.0125 *cm && zpos_kerma < 0.0125*cm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);//this zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm makes sure we only get the plane that the source is in (the source is lying on the xy plane and has a finite z thickness
-          if(zpos_kerma> -0.0125 *cm && zpos_kerma < 0.0125*cm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);//this zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm makes sure we only get the plane that the source is in (the source is lying on the xy plane and has a finite z thickness
-
-        }                       //if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm && xpos_kerma> -0.125 *mm && xpos_kerma < 0.125*mm) G4cout << ypos_kerma << "     " << kerma << G4endl;
-        }
-          //ofstream myfile;
-          //myfile.open ("Kerma.txt");
-          //myfile << ypos_kerma <<  "     " << kerma << "\n";
-          //myfile.close();
+            BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
+            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
+            //G4cout << "vals" << xpos_kerma<<"  ,  "<< ypos_kerma << kerma << G4endl;
+            //ofstream myfile;
+            //myfile.open ("Kerma_newtry.txt", std::ios::app);
+            //myfile << xpos_kerma <<  "  " <<  ypos_kerma  <<  "  " << kerma << "\n";
+            //myfile.close();
+                        }
+            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);
+             }                       
+        
 #endif
        }
   }
+}
      
+  //if(theTrack-> GetTrackStatus() == fAlive) {return;}
+
   // G4cout << "Start secondariessss" << G4endl;  
   // Retrieve the secondary particles
   G4TrackVector* fSecondary = steppingManager -> GetfSecondary();

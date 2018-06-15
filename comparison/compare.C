@@ -42,6 +42,7 @@ fclose(fg1);
 // Read the results of the brachytherapy advanced example
 // FlexiSorceMacro.mac with 280 M events
 FILE *fg2=fopen("geant4_dose.txt", "r");
+//FILE *fg2=fopen("geant4_dose_280M.txt", "r");
 Int_t n_points_geant4 =398;
 Float_t x2[n_points_geant4], y2[n_points_geant4];
 Int_t ncols_geant4;
