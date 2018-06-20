@@ -39,6 +39,7 @@ The class BrachyAnalysisManager creates and manages histograms and ntuples
 #include "TFile.h"
 #include "TH1F.h"
 #include "TH2F.h"
+//#include "TH3F.h"
 #endif
 
 
@@ -58,6 +59,12 @@ public:
 #ifdef ANALYSIS_USE
 
   void FillH2WithEnergyDeposition(G4double xx,G4double yy, G4double energyDep);
+
+  //void FillH2_1cm_WithEnergyDeposition(G4double xx,G4double yy, G4double energyDep);
+  //void FillH2_2cm_WithEnergyDeposition(G4double xx,G4double yy, G4double energyDep);
+  //void FillH2_3cm_WithEnergyDeposition(G4double xx,G4double yy, G4double energyDep);
+  //void FillH2_4cm_WithEnergyDeposition(G4double xx,G4double yy, G4double energyDep);
+  //void FillH2_5cm_WithEnergyDeposition(G4double xx,G4double yy, G4double energyDep);
   // Method to fill the 2D histogram with the energy deposition, integrated over a run, in each voxel
   // of the scoring mesh. The scoring mesh is in the plane containing the source.
   
@@ -69,8 +76,9 @@ public:
   
   void FillH5WithKerma(G4double xx,G4double yy, G4double Kerma);
 
+  //void FillH6WithEnergyDeposition(G4double xx,G4double yy, G4double zz, G4double energyDep);
 
- void FillPrimaryParticleHistogram(G4double);
+  void FillPrimaryParticleHistogram(G4double);
   // Energy spectrum of primary particles
 #endif
 
@@ -85,9 +93,16 @@ private:
     TFile* theTFile;
     TH1F* histo;
     TH2F* histo2;
+    //TH2F* histo2_1cm;
+    //TH2F* histo2_2cm;
+    //TH2F* histo2_3cm;
+    //TH2F* histo2_4cm;
+    //TH2F* histo2_5cm;
     TH2F* histo3;
     TH2F* histo4;
     TH2F* histo5;
+    //TH3F* histo6;
+
 #endif
 };
 #endif

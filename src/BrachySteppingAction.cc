@@ -69,11 +69,22 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   G4Track* theTrack = aStep-> GetTrack();
   G4int id = theTrack->GetTrackID();
   G4double charge = theTrack->GetParticleDefinition()->GetPDGCharge();
-  
+  G4String material = theTrack-> GetMaterial() -> GetName();
+
+  //G4cout << material << G4endl;   
+
   // check if it is alive - we want it to be alive
-  if(theTrack-> GetTrackStatus() != fAlive) {return;} //WHAT SHOULD THIS BE?! != OR ==?????????
+  //if(theTrack-> GetTrackStatus() != fAlive) {return;} //WHAT SHOULD THIS BE?! != OR ==?????????
 
   // Get KERMA
+
+  // **************** USING SCORING METHOD ***********
+
+  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0)&& (theTrack->GetParentID()==1)){//is the charged child of a primary particle 	
+
+        theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
+    }
+  // **************** OLD METHOD **********************
 
   //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary particle
   //     if (theTrack->GetCurrentStepNumber()==1){//just been prod
@@ -88,49 +99,44 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   //        G4double ypos_kerma = coord1.y()/mm;
   //        G4double zpos_kerma = coord1.z()/mm;
 
-  if (id ==1 && charge ==0.0){ //primary photon
-     const std::vector<const G4Track*>* secondaryList = aStep->GetSecondaryInCurrentStep();
-     for (auto it = secondaryList->begin(); it != secondaryList->end(); ++it)
-     {
-         G4double secondaryCharge = (*it)->GetParticleDefinition()->GetPDGCharge();
-         // score if the secondary particle is charged particle
-         if(secondaryCharge != 0.0)
-         {
-            G4double eKin  = (*it)->GetKineticEnergy()/MeV;
-            
-            G4StepPoint* p1 = aStep->GetPreStepPoint();
+  // **************** PATRIK'S METHOD **********************
 
-            //G4double density = aStep->GetPreStepPoint()->GetMaterial()->GetDensity();
-            //G4double volume = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume();
-            //ResolveSolid(aStep);
-            //G4double mass = density * volume;
-            G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
+  //if (id ==1 && charge ==0.0){ //primary photon
+  //   const std::vector<const G4Track*>* secondaryList = aStep->GetSecondaryInCurrentStep();
+  //   for (auto it = secondaryList->begin(); it != secondaryList->end(); ++it)
+  //   {
+  //       G4double secondaryCharge = (*it)->GetParticleDefinition()->GetPDGCharge();
+  //       // score if the secondary particle is charged particle
+  //       if(secondaryCharge != 0.0)
+  //       {
+  //          G4double eKin  = (*it)->GetKineticEnergy()/MeV;
+  //         
+  //          G4StepPoint* p1 = aStep->GetPreStepPoint();
+  //
+  //          G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
+  //
+  //          G4double kerma = eKin / mass;
+  //          kerma *= aStep->GetPreStepPoint()->GetWeight();
+  //
+  //          G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
+  //          G4double xpos_kerma = coord1.x(); //should have mm here or no?????????
+  //          G4double ypos_kerma = coord1.y();
+  //          G4double zpos_kerma = coord1.z();
+  //  
+  // **************************************
+ 
 
-            G4double kerma = eKin / mass;
-            kerma *= aStep->GetPreStepPoint()->GetWeight();
-
-            G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
-            G4double xpos_kerma = coord1.x(); //should have mm here or no?????????
-            G4double ypos_kerma = coord1.y();
-            G4double zpos_kerma = coord1.z();
-
-
-#ifdef ANALYSIS_USE  
-            BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
-            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
-            //G4cout << "vals" << xpos_kerma<<"  ,  "<< ypos_kerma << kerma << G4endl;
-            //ofstream myfile;
-            //myfile.open ("Kerma_newtry.txt", std::ios::app);
-            //myfile << xpos_kerma <<  "  " <<  ypos_kerma  <<  "  " << kerma << "\n";
-            //myfile.close();
-                        }
-            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);
-             }                       
+//#ifdef ANALYSIS_USE  
+//            BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
+//            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
+//                        }
+//            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);
+//             }                       
         
-#endif
-       }
-  }
-}
+//#endif
+       //}
+  //}
+//}
      
   //if(theTrack-> GetTrackStatus() == fAlive) {return;}
 
