@@ -80,10 +80,10 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
 
   // **************** USING SCORING METHOD ***********
 
-  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0)&& (theTrack->GetParentID()==1)){//is the charged child of a primary particle 	
-
-        theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
-    }
+  //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0)&& (theTrack->GetParentID()==1)){//is the charged child of a primary particle 	
+  //
+  //      theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
+  //  }
   // **************** OLD METHOD **********************
 
   //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary particle
@@ -138,7 +138,7 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   //}
 //}
      
-  //if(theTrack-> GetTrackStatus() == fAlive) {return;}
+  if(theTrack-> GetTrackStatus() == fAlive) {return;}
 
   // G4cout << "Start secondariessss" << G4endl;  
   // Retrieve the secondary particles

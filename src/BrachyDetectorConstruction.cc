@@ -69,9 +69,9 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
   phantomAbsorberMaterial(0)
 {
  // Define half size of the phantom along the x, y, z axis
- //phantomSizeX = 150.*cm;
- //phantomSizeY = 150.*cm;
- //phantomSizeZ = 150.*cm;
+ phantomSizeX = 150.*cm;
+ phantomSizeY = 150.*cm;
+ phantomSizeZ = 150.*cm;
  phantomDiameter = 500.*cm;
 
  // Define the sizes of the World volume containing the phantom
@@ -186,10 +186,11 @@ void BrachyDetectorConstruction::ConstructPhantom()
   WorldPhys = new G4PVPlacement(0,G4ThreeVector(),"WorldPhys",WorldLog,0,false,0);
 
   // Water Box
-  //Phantom = new G4Box("Phantom",phantomSizeX,phantomSizeY,phantomSizeZ);
-  Phantom = new G4Sphere("Phantom",0.,phantomDiameter/2.,0.,360.*deg,0.,180.*deg);
+  Phantom = new G4Box("Phantom",phantomSizeX,phantomSizeY,phantomSizeZ);
+  //Phantom = new G4Sphere("Phantom",0.,phantomDiameter/2.,0.,360.*deg,0.,180.*deg);  //for kerma
   // Logical volume
-  PhantomLog = new G4LogicalVolume(Phantom,dryair,"PhantomLog",0,0,0);
+  PhantomLog = new G4LogicalVolume(Phantom,water,"PhantomLog",0,0,0);
+  //PhantomLog = new G4LogicalVolume(Phantom,dryair,"PhantomLog",0,0,0);// for kerma
 
   // Physical volume
   PhantomPhys = new G4PVPlacement(0,G4ThreeVector(), // Position: rotation and translation

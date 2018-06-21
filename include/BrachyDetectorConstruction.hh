@@ -73,15 +73,16 @@ private:
   G4VPhysicalVolume* WorldPhys;    //pointer to the physical World
 
   // Phantom ... 
-  G4Sphere*              Phantom;  //pointer to solid phantom
+  //G4Sphere*              Phantom;  //for kerma pointer to solid phantom
+  G4Box*              Phantom;  // pointer to solid phantom
   G4LogicalVolume*    PhantomLog; //pointer to logic phantom
   G4VPhysicalVolume*  PhantomPhys; //pointer to physical phantom
   G4Material*         phantomAbsorberMaterial;
  
   G4double phantomDiameter;
-  //G4double phantomSizeX; //Phantom XSize
-  //G4double phantomSizeY; //Phantom YSize
-  //G4double phantomSizeZ; //Phantom ZSize  
+  G4double phantomSizeX; //Phantom XSize
+  G4double phantomSizeY; //Phantom YSize
+  G4double phantomSizeZ; //Phantom ZSize  
   G4double worldSizeX ; //World XSize
   G4double worldSizeY ; //World YSize
   G4double worldSizeZ ; //World XSize
