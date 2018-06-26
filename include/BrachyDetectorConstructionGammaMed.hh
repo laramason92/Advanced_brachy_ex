@@ -50,6 +50,7 @@ class G4Sphere;
 class G4VPhysicalVolume;
 class BrachyMaterial;
 class G4VisAttributes;
+class G4GenericMessenger;
 
 class BrachyDetectorConstructionGammaMed
 {
@@ -60,10 +61,21 @@ public:
   void  ConstructGammaMed(G4VPhysicalVolume*);
   // Model the GammaMed iridium source
 
+  void  MoveSource(G4double x);//, G4double y, G4double z);
+
   void  CleanGammaMed(); 
   // Destroy the Iridium source in the experimental set-up
 
 private:   
+
+  void  DefineCommands();
+
+  G4GenericMessenger* fMessenger;
+
+  G4double fSourceTransX;
+  G4double fSourceTransY;
+  G4double fSourceTransZ;
+
   G4Tubs* steel_shell;
   G4LogicalVolume* logical_steel_shell;    
   G4VPhysicalVolume* physical_steel_shell;
