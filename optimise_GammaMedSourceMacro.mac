@@ -21,11 +21,14 @@
 /score/list                                             
 
 # 0 position
-/run/beamOn 5000
+/run/beamOn 50
 
 #next
-/gammamed/detector/ 1. 1. 1. mm
-/run/beamOn 5000
+/gammamed/detector/SourceTranslationX 1. mm
+/gammamed/detector/SourceTranslationY 1. mm
+/gammamed/detector/SourceTranslationZ 1. mm
+
+/run/beamOn 5
 #
 # Dump scores to a file
 #

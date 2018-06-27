@@ -61,7 +61,7 @@
 #include "G4GenericMessenger.hh"
 
 BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
-  : steel_shell(0),logical_steel_shell(0),air_gap(0), logical_air_gap(0), physical_air_gap(0),
+  : steel_shell(0),logical_steel_shell(0),physical_steel_shell(0),air_gap(0), logical_air_gap(0), physical_air_gap(0),
     End1_steel_shell(0),logical_End1_steel_shell(0), physical_End1_steel_shell(0),
     End1cone_steel_shell(0),logical_End1cone_steel_shell(0), physical_End1cone_steel_shell(0),
     End2_steel_shell(0),logical_End2_steel_shell(0), physical_End2_steel_shell(0),
@@ -103,7 +103,6 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4Material* acetalMat = pMat -> GetMat("acetal");
 
  //Define dimensions of the outer Steel shell around the solid source - not including the ends 
-
   G4double shellr_min = 0.00 * mm;
   G4double shellr_max = 0.9 * mm;
   G4double shell_length = 3.6 * mm; //4.96-0.15 
@@ -112,9 +111,8 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double shelloffset_z = 0.05 * mm; 
   steel_shell = new G4Tubs("steel_shell",shellr_min, shellr_max/2, shell_length/2.,0.*deg,360.*deg);
   logical_steel_shell = new G4LogicalVolume(steel_shell, steelMat, "steel_shell_log", 0, 0, 0);
-  physical_steel_shell = new G4PVPlacement(0,G4ThreeVector(shelloffset_x + fSourceTransX,shelloffset_y + fSourceTransY,shelloffset_z + fSourceTransZ),"phys_steel_shell", logical_steel_shell, mother, false, 0, true);
+  physical_steel_shell = new G4PVPlacement(0,G4ThreeVector(shelloffset_x,shelloffset_y,shelloffset_z),"physical_steel_shell", logical_steel_shell, mother, false, 0, true);
 
-  G4cout << "The iridium core is at position (" << shelloffset_x + fSourceTransX << ", " << shelloffset_y + fSourceTransY << ", " << shelloffset_z + fSourceTransZ << ")" << G4endl; 
 
 //Define dimensions of the air gap between Steel shell and Iridium core
   G4double airr_min = 0.00 * mm;
@@ -136,7 +134,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double end1offset_x = 0.0 * mm;
   G4double end1offset_y = 0.0 * mm;
   G4double end1offset_z = 2.0825 * mm;
-  physical_End1_steel_shell = new G4PVPlacement(0,G4ThreeVector(end1offset_x + fSourceTransX,end1offset_y + fSourceTransY,end1offset_z + fSourceTransZ),"phys_End1_steel_shell", logical_End1_steel_shell,mother, false, 0, true);
+  physical_End1_steel_shell = new G4PVPlacement(0,G4ThreeVector(end1offset_x,end1offset_y,end1offset_z),"phys_End1_steel_shell", logical_End1_steel_shell,mother, false, 0, true);
 
   G4double End1coner1_min = 0.0 * mm; 
   G4double End1coner1_max = 0.9 * mm;
@@ -148,7 +146,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double end1coneoffset_x = 0.0 * mm;
   G4double end1coneoffset_y = 0.0 * mm;
   G4double end1coneoffset_z = 2.3925 * mm;
-  physical_End1cone_steel_shell = new G4PVPlacement(0,G4ThreeVector(end1coneoffset_x + fSourceTransX,end1coneoffset_y + fSourceTransY,end1coneoffset_z + fSourceTransZ),"phys_End1cone_steel_shell", logical_End1cone_steel_shell,mother, false, 0, true);
+  physical_End1cone_steel_shell = new G4PVPlacement(0,G4ThreeVector(end1coneoffset_x,end1coneoffset_y,end1coneoffset_z),"phys_End1cone_steel_shell", logical_End1cone_steel_shell,mother, false, 0, true);
 
 //Define the cable weld end of the Steel shell 
   G4double End2r_min1 = 0.0 * mm;
@@ -161,7 +159,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double end2offset_x = 0.0 * mm;
   G4double end2offset_y = 0.0 * mm;
   G4double end2offset_z = -1.9 * mm; 
-  physical_End2_steel_shell = new G4PVPlacement(0,G4ThreeVector(end2offset_x + fSourceTransX,end2offset_y + fSourceTransY,end2offset_z + fSourceTransZ), "phys_End2_steel_shell", logical_End2_steel_shell,mother, false, 0, true);
+  physical_End2_steel_shell = new G4PVPlacement(0,G4ThreeVector(end2offset_x,end2offset_y,end2offset_z), "phys_End2_steel_shell", logical_End2_steel_shell,mother, false, 0, true);
 
 //Define the cable 
   G4double cable_min = 0.0 * mm;
@@ -172,7 +170,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double cableoffset_x = 0.0 * mm;
   G4double cableoffset_y = 0.0 * mm;
   G4double cableoffset_z = -4.55 * mm;
-  physical_cable = new G4PVPlacement(0,G4ThreeVector(cableoffset_x + fSourceTransX,cableoffset_y + fSourceTransY,cableoffset_z + fSourceTransZ),"phys_cable", logical_cable, mother, false, 0, true);
+  physical_cable = new G4PVPlacement(0,G4ThreeVector(cableoffset_x,cableoffset_y,cableoffset_z),"phys_cable", logical_cable, mother, false, 0, true);
 
 // Define the Iridium core
   G4double corer_min = 0.0 * mm;	
@@ -379,7 +377,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
 
 // The following with instruction from example B5
 
-void BrachyDetectorConstructionGammaMed::MoveSource(G4double x)//, G4double y, G4double z)
+void BrachyDetectorConstructionGammaMed::MoveSourceX(G4double x)//, G4double y, G4double z)
 {
  if (!physical_steel_shell){
       G4cerr << "Detector has not yet been constructed." << G4endl;
@@ -387,10 +385,33 @@ void BrachyDetectorConstructionGammaMed::MoveSource(G4double x)//, G4double y, G
    } 
 
  fSourceTransX = x;
- fSourceTransY = x;//y;
- fSourceTransZ = x;//z;
+ physical_steel_shell->SetTranslation(G4ThreeVector(x,0,0));  
 
- //physical_steel_shell->SetTranslation(G4ThreeVector(x,y,z)); //do I need this? I dont think so 
+ G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
+}
+
+void BrachyDetectorConstructionGammaMed::MoveSourceY(G4double y)
+{
+ if (!physical_steel_shell){
+      G4cerr << "Detector has not yet been constructed." << G4endl;
+      return;
+   } 
+
+ fSourceTransY = y;
+ physical_steel_shell->SetTranslation(G4ThreeVector(0,y,0));  
+
+ G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
+}
+
+void BrachyDetectorConstructionGammaMed::MoveSourceZ(G4double z)
+{
+ if (!physical_steel_shell){
+      G4cerr << "Detector has not yet been constructed." << G4endl;
+      return;
+   } 
+
+ fSourceTransZ = z;
+ physical_steel_shell->SetTranslation(G4ThreeVector(0,0,z));  
 
  G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
 }
@@ -401,13 +422,30 @@ void BrachyDetectorConstructionGammaMed::DefineCommands()
                                       "/gammamed/detector/",
                                       "Detector control");
  
- auto& transSourceCmd
-    = fMessenger->DeclareMethodWithUnit("SourceTranslation","mm",
-                                &BrachyDetectorConstructionGammaMed::MoveSource,
-                                "Set translation of source.");
-  transSourceCmd.SetParameterName("translation", true);
-  transSourceCmd.SetRange("translation>=0. && translation<100.");
-  transSourceCmd.SetDefaultValue("0.");
+ 
+ auto& transSourceXCmd
+    = fMessenger->DeclareMethodWithUnit("SourceTranslationX","mm",
+                                &BrachyDetectorConstructionGammaMed::MoveSourceX,
+                                "Set translation of source x.");
+  transSourceXCmd.SetParameterName("translationx", true);
+  transSourceXCmd.SetRange("translationx>=0. && translationx<100.");
+  transSourceXCmd.SetDefaultValue("0.");
+ 
+ auto& transSourceYCmd
+    = fMessenger->DeclareMethodWithUnit("SourceTranslationY","mm",
+                                &BrachyDetectorConstructionGammaMed::MoveSourceY,
+                                "Set translation of source y.");
+  transSourceYCmd.SetParameterName("translationy", true);
+  transSourceYCmd.SetRange("translationy>=0. && translationy<100.");
+  transSourceYCmd.SetDefaultValue("0.");
+
+ auto& transSourceZCmd
+    = fMessenger->DeclareMethodWithUnit("SourceTranslationZ","mm",
+                                &BrachyDetectorConstructionGammaMed::MoveSourceZ,
+                                "Set translation of source z.");
+  transSourceZCmd.SetParameterName("translationz", true);
+  transSourceZCmd.SetRange("translationz>=0. && translationz<100.");
+  transSourceZCmd.SetDefaultValue("0.");
 }
 
 

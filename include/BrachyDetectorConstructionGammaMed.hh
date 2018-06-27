@@ -61,7 +61,9 @@ public:
   void  ConstructGammaMed(G4VPhysicalVolume*);
   // Model the GammaMed iridium source
 
-  void  MoveSource(G4double x);//, G4double y, G4double z);
+  void  MoveSourceX(G4double x);//, G4double y, G4double z);
+  void  MoveSourceY(G4double y);//, G4double y, G4double z);
+  void  MoveSourceZ(G4double z);//, G4double y, G4double z);
 
   void  CleanGammaMed(); 
   // Destroy the Iridium source in the experimental set-up
