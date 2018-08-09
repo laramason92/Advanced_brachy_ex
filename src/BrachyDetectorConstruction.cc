@@ -72,7 +72,7 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
  phantomSizeX = 150.*cm;
  phantomSizeY = 150.*cm;
  phantomSizeZ = 150.*cm;
- phantomDiameter = 15.*cm;
+ phantomDiameter = 200.*cm;
 
  // Define the sizes of the World volume containing the phantom
  worldSizeX = 50.0*m;

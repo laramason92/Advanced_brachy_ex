@@ -71,7 +71,7 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   G4double charge = theTrack->GetParticleDefinition()->GetPDGCharge();
   G4String material = theTrack-> GetMaterial() -> GetName();
 
-  //G4cout << material << G4endl;   
+  G4cout << material << G4endl;   
 
   // check if it is alive - we want it to be alive
   //if(theTrack-> GetTrackStatus() != fAlive) {return;} //WHAT SHOULD THIS BE?! != OR ==?????????
@@ -80,10 +80,13 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
 
   // **************** USING SCORING METHOD ***********
 
-  //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0)&& (theTrack->GetParentID()==1)){//is the charged child of a primary particle 	
-  //
-  //      theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
-  //  }
+  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()==0)&& (material == "Water") ){//is a charged particle hitting the water 	
+
+        G4double eKinVertex = theTrack->GetVertexKineticEnergy()/keV; 
+        //G4cout << eKinVertex << G4endl; 
+        //theTrack -> SetTrackStatus(fKillSecondaries);
+        theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
+    }
   // **************** OLD METHOD **********************
 
   //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary particle
