@@ -46,6 +46,7 @@ class G4LogicalVolume;
 class G4Tubs;
 class G4Cons;
 class G4Torus;
+class G4Box;
 class G4Sphere;
 class G4VPhysicalVolume;
 class BrachyMaterial;
@@ -77,6 +78,10 @@ private:
   G4double fSourceTransX;
   G4double fSourceTransY;
   G4double fSourceTransZ;
+
+  G4Box* crit_vol;
+  G4LogicalVolume* logical_crit_vol;
+  G4VPhysicalVolume* physical_crit_vol;
 
   G4Tubs* steel_shell;
   G4LogicalVolume* logical_steel_shell;    

@@ -99,11 +99,11 @@ void BrachyAnalysisManager::book()
  //histo2_5cm = new TH2F("h20_5cm","edep2Dxy_5cm", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
  //				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
 
- histo3 = new TH2F("h30","kerma2Dxy_voxelised_binning", 8001, -1000.125, 1000.125, // binning, xmin, xmax, along x direction in cm WANT 1CM THICK BINS
-				     8001, -1000.125, 1000.125);// binning, ymin, ymax, along y direction in cm
+ histo3 = new TH2F("h30","kerma2Dxy_voxelised_binning", 400, -50, 50, // binning, xmin, xmax, along x direction in cm WANT 1CM THICK BINS
+				     400, 950, 1050);// binning, ymin, ymax, along y direction in cm
 
- histo5 = new TH2F("h50","kerma_mm_binning_2Dxy", 2001, -1000.5, 1000.5, // binning, xmin, xmax, along x direction in mm binning in the same way as the dose hist
-				     2001, -1000.5, 1000.5);// binning, ymin, ymax, along y direction in mm
+ histo5 = new TH2F("h50","kerma_mm_binning_2Dxy", 1, -50, 50,  // binning, xmin, xmax, along x direction in mm binning in the same way as the dose hist
+				     1, 950, 1050);// binning, ymin, ymax, along y direction in mm
 
  //histo3 = new TH2F("h30","kerma2Dxy", 2001, -1000.5, 1000.5, // binning, xmin, xmax, along x direction in mm binning in the same way as the dose hist
  //				     2001, -1000.5, 1000.5);// binning, ymin, ymax, along y direction in mm

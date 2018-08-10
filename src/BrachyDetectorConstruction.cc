@@ -72,7 +72,7 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
  phantomSizeX = 150.*cm;
  phantomSizeY = 150.*cm;
  phantomSizeZ = 150.*cm;
- phantomDiameter = 200.*cm;
+ phantomDiameter = 300.*cm;
 
  // Define the sizes of the World volume containing the phantom
  worldSizeX = 50.0*m;
@@ -189,7 +189,7 @@ void BrachyDetectorConstruction::ConstructPhantom()
   //Phantom = new G4Box("Phantom",phantomSizeX,phantomSizeY,phantomSizeZ);
   Phantom = new G4Sphere("Phantom",0.,phantomDiameter/2.,0.,360.*deg,0.,180.*deg);  //for kerma
   // Logical volume
-  PhantomLog = new G4LogicalVolume(Phantom,water,"PhantomLog",0,0,0);
+  PhantomLog = new G4LogicalVolume(Phantom,vacuum,"PhantomLog",0,0,0);
   //PhantomLog = new G4LogicalVolume(Phantom,dryair,"PhantomLog",0,0,0);// for kerma
 
   // Physical volume

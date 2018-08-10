@@ -61,48 +61,94 @@ BrachySteppingAction::~BrachySteppingAction()
 void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
 {
 
-// Retrieve the spectrum of gamma emitted in the Radioactive Decay
-// and store it in a 1D histogram
-
-  //The following code is with help from Dr Patrik Eschle <patrik.eschle@zhaw.ch>, who himself cites help using GetSecondaryInCurrentStep  from Tianyu Liu <kingcrimsontianyu@gmail.com>
   G4SteppingManager*  steppingManager = fpSteppingManager;
   G4Track* theTrack = aStep-> GetTrack();
-  G4int id = theTrack->GetTrackID();
-  G4double charge = theTrack->GetParticleDefinition()->GetPDGCharge();
-  G4String material = theTrack-> GetMaterial() -> GetName();
 
-  G4cout << material << G4endl;   
+  //G4int id = theTrack->GetTrackID();
 
+  //G4double charge = theTrack->GetParticleDefinition()->GetPDGCharge();
+
+  //G4String material = theTrack-> GetMaterial() -> GetName();
+
+  G4ThreeVector pos = theTrack->GetVertexPosition()/mm;
+  //G4int parentid = theTrack->GetParentID();
+
+  //G4StepPoint* poststeppt = aStep->GetPostStepPoint();
+  //G4ThreeVector coordpost = poststeppt->GetPosition(); 
+  G4StepPoint* presteppt = aStep->GetPreStepPoint();
+  //G4ThreeVector coordpre = presteppt->GetPosition(); 
+  //G4String vertexmaterial = theTrack->GetVertexPosition()->GetPosition()->GetMaterial();
+  //G4String creatorprocess = theTrack->GetCreatorProcess()->GetProcessName();
+
+  //G4cout << material << G4endl;
   // check if it is alive - we want it to be alive
   //if(theTrack-> GetTrackStatus() != fAlive) {return;} //WHAT SHOULD THIS BE?! != OR ==?????????
 
   // Get KERMA
 
+  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary photon
+          
+          G4String materialprestep = presteppt->GetMaterial()->GetName();
+
+          G4String materialvertex = theTrack->GetLogicalVolumeAtVertex()->GetMaterial()->GetName();
+
+          if ( (materialvertex == "DryAir")){
+
+		  G4double eKinVertex = theTrack->GetVertexKineticEnergy()/keV; // Ekin at vertex, divide by MeV to put the units as MeV
+		  G4double mass_g = presteppt->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/g; //gives us the mass of the critical volume (10cm^3)
+
+		  G4double kerma = eKinVertex / mass_g;
+	          
+                  if (materialvertex != materialprestep){
+                  G4cout << "materials dont match" << G4endl; 
+                  }
+
+		  G4double xpos_kerma = pos.x()/mm;
+		  G4double ypos_kerma = pos.y()/mm;
+		  G4double zpos_kerma = pos.z()/mm;
+
+		  //G4cout << "particle id - " << id << G4endl;
+		  //G4cout << "parent id - " << parentid << G4endl;
+		  //G4cout << "charge - " << charge << G4endl;
+		  //G4cout << "vertex position - " << pos << G4endl;
+		  //G4cout <<  "vertex pos x - " << xpos_kerma << G4endl;
+		  //G4cout <<  "material of prestep point- " << materialprestep << G4endl;   
+		  // G4cout <<  "post step point - " << coordpost << G4endl;
+		  //G4cout << "pre step point - " << coordpre << G4endl;
+		  //G4cout << "mass - " << mass_g << G4endl;
+		  //G4cout << "****************************" << G4endl; 
+
+
+
+#ifdef ANALYSIS_USE  
+            BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
+            if(zpos_kerma >= -50.0 *mm && zpos_kerma <= 50.0*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
+                        }
+            if(zpos_kerma >= -50.0 *mm && zpos_kerma <= 50.0*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);
+             }                       
+        
+#endif
+
+		  theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
+       //}
+  //}
+    }
+  }   
+
+
   // **************** USING SCORING METHOD ***********
 
-  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()==0)&& (material == "Water") ){//is a charged particle hitting the water 	
-
-        G4double eKinVertex = theTrack->GetVertexKineticEnergy()/keV; 
+  //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()==0)&& (material == "Water") ){//is a charged particle hitting the water 	
+  //
+  //      G4double eKinVertex = theTrack->GetVertexKineticEnergy()/keV; 
         //G4cout << eKinVertex << G4endl; 
         //theTrack -> SetTrackStatus(fKillSecondaries);
-        theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
-    }
+  //      theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
+  //  }
   // **************** OLD METHOD **********************
 
-  //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary particle
-  //     if (theTrack->GetCurrentStepNumber()==1){//just been prod
-  //        G4double eKinVertex = theTrack->GetVertexKineticEnergy()/MeV; // Ekin at vertex, divide by MeV to put the units as MeV
-  //        G4double mass_g = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/g;
-  //
-  //        G4double kerma = eKinVertex / mass_g;
-  //
-  //        G4StepPoint* p1 = aStep->GetPreStepPoint();
-  //        G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
-  //        G4double xpos_kerma = coord1.x()/mm;
-  //        G4double ypos_kerma = coord1.y()/mm;
-  //        G4double zpos_kerma = coord1.z()/mm;
-
   // **************** PATRIK'S METHOD **********************
+  //The following code is with help from Dr Patrik Eschle <patrik.eschle@zhaw.ch>, who himself cites help using GetSecondaryInCurrentStep  from Tianyu Liu <kingcrimsontianyu@gmail.com>
 
   //if (id ==1 && charge ==0.0){ //primary photon
   //   const std::vector<const G4Track*>* secondaryList = aStep->GetSecondaryInCurrentStep();
@@ -129,19 +175,7 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   // **************************************
  
 
-//#ifdef ANALYSIS_USE  
-//            BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
-//            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
-//                        }
-//            if(zpos_kerma> -0.125 *mm && zpos_kerma < 0.125*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);
-//             }                       
-        
-//#endif
-       //}
-  //}
-//}
-     
-  if(theTrack-> GetTrackStatus() == fAlive) {return;}
+  //if(theTrack-> GetTrackStatus() == fAlive) {return;}
 
   // G4cout << "Start secondariessss" << G4endl;  
   // Retrieve the secondary particles
@@ -150,8 +184,7 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
    for(size_t lp1=0;lp1<(*fSecondary).size(); lp1++)
    { 
      // Retrieve particle
-     const G4ParticleDefinition* particleName = (*fSecondary)[lp1] -> GetDefinition();     
-     
+     const G4ParticleDefinition* particleName = (*fSecondary)[lp1] -> GetDefinition();      
 
      if (particleName == G4Gamma::Definition())
      {
@@ -167,6 +200,7 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
           // Store the initial energy of particles in a 1D histogram
           analysis -> FillPrimaryParticleHistogram(energy/keV);
 #endif
+
          }
       }
    } 
