@@ -62,7 +62,8 @@
 #include "G4GenericMessenger.hh"
 
 BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
-  : crit_vol(0),logical_crit_vol(0),physical_crit_vol(0), steel_shell(0),logical_steel_shell(0),physical_steel_shell(0),air_gap(0), logical_air_gap(0), physical_air_gap(0),
+  : //crit_vol(0),logical_crit_vol(0),physical_crit_vol(0), 
+    steel_shell(0),logical_steel_shell(0),physical_steel_shell(0),air_gap(0), logical_air_gap(0), physical_air_gap(0),
     End1_steel_shell(0),logical_End1_steel_shell(0), physical_End1_steel_shell(0),
     End1cone_steel_shell(0),logical_End1cone_steel_shell(0), physical_End1cone_steel_shell(0),
     End2_steel_shell(0),logical_End2_steel_shell(0), physical_End2_steel_shell(0),
@@ -105,15 +106,15 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4Material* acetalMat = pMat -> GetMat("acetal");
   G4Material* dryair = pMat -> GetMat("DryAir") ;
 
-  G4double crit_vol_x = 5.0*cm;
-  G4double crit_vol_y = 5.0*cm;
-  G4double crit_vol_z = 5.0*cm;
-  G4double crit_vol_offset_x = 0.0 * mm;
-  G4double crit_vol_offset_y = 1000.0 * mm;
-  G4double crit_vol_offset_z = 0.05 * mm;
-  crit_vol = new G4Box("crit_vol", crit_vol_x, crit_vol_y, crit_vol_z);
-  logical_crit_vol = new G4LogicalVolume(crit_vol, dryair, "crit_vol_log",0,0,0);
-  physical_crit_vol = new G4PVPlacement(0, G4ThreeVector(crit_vol_offset_x,crit_vol_offset_y,crit_vol_offset_z),"physical_crit_vol", logical_crit_vol, mother, false, 0, true);  
+  //G4double crit_vol_x = 5.0*cm;
+  //G4double crit_vol_y = 5.0*cm;
+  //G4double crit_vol_z = 5.0*cm;
+  //G4double crit_vol_offset_x = 0.0 * mm;
+  //G4double crit_vol_offset_y = 1000.0 * mm;
+  //G4double crit_vol_offset_z = 0.05 * mm;
+  //crit_vol = new G4Box("crit_vol", crit_vol_x, crit_vol_y, crit_vol_z);
+  //logical_crit_vol = new G4LogicalVolume(crit_vol, dryair, "crit_vol_log",0,0,0);
+  //physical_crit_vol = new G4PVPlacement(0, G4ThreeVector(crit_vol_offset_x,crit_vol_offset_y,crit_vol_offset_z),"physical_crit_vol", logical_crit_vol, mother, false, 0, true);  
 
  //Define dimensions of the outer Steel shell around the solid source - not including the ends 
   G4double shellr_min = 0.00 * mm;
@@ -385,7 +386,7 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   //logical_air_rod2 -> SetVisAttributes(airAttributes);
   //logical_air_rod3 -> SetVisAttributes(airAttributes);
   //logical_air_ring -> SetVisAttributes(airAttributes);
-  logical_crit_vol -> SetVisAttributes(airAttributes);
+  //logical_crit_vol -> SetVisAttributes(airAttributes);
 }
 
 // The following with instruction from example B5
@@ -645,14 +646,14 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
   delete steel_shell;
   steel_shell = 0;
 
-  delete physical_crit_vol;
-  physical_crit_vol = 0;
+  //delete physical_crit_vol;
+  //physical_crit_vol = 0;
 
-  delete logical_crit_vol;
-  logical_crit_vol = 0;
+  //delete logical_crit_vol;
+  //logical_crit_vol = 0;
 
-  delete crit_vol;
-  crit_vol = 0;
+  //delete crit_vol;
+  //crit_vol = 0;
  
  G4RunManager::GetRunManager() -> GeometryHasBeenModified();
 }

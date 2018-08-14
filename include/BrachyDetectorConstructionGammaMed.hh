@@ -79,9 +79,9 @@ private:
   G4double fSourceTransY;
   G4double fSourceTransZ;
 
-  G4Box* crit_vol;
-  G4LogicalVolume* logical_crit_vol;
-  G4VPhysicalVolume* physical_crit_vol;
+  //G4Box* crit_vol;
+  //G4LogicalVolume* logical_crit_vol;
+  //G4VPhysicalVolume* physical_crit_vol;
 
   G4Tubs* steel_shell;
   G4LogicalVolume* logical_steel_shell;    

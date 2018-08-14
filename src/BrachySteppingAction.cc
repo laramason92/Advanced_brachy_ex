@@ -64,48 +64,30 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
   G4SteppingManager*  steppingManager = fpSteppingManager;
   G4Track* theTrack = aStep-> GetTrack();
 
-  //G4int id = theTrack->GetTrackID();
 
-  //G4double charge = theTrack->GetParticleDefinition()->GetPDGCharge();
+//  G4ThreeVector pos = theTrack->GetVertexPosition()/mm;
+//  G4StepPoint* presteppt = aStep->GetPreStepPoint();
 
-  //G4String material = theTrack-> GetMaterial() -> GetName();
-
-  G4ThreeVector pos = theTrack->GetVertexPosition()/mm;
-  //G4int parentid = theTrack->GetParentID();
-
-  //G4StepPoint* poststeppt = aStep->GetPostStepPoint();
-  //G4ThreeVector coordpost = poststeppt->GetPosition(); 
-  G4StepPoint* presteppt = aStep->GetPreStepPoint();
-  //G4ThreeVector coordpre = presteppt->GetPosition(); 
-  //G4String vertexmaterial = theTrack->GetVertexPosition()->GetPosition()->GetMaterial();
-  //G4String creatorprocess = theTrack->GetCreatorProcess()->GetProcessName();
-
-  //G4cout << material << G4endl;
-  // check if it is alive - we want it to be alive
-  //if(theTrack-> GetTrackStatus() != fAlive) {return;} //WHAT SHOULD THIS BE?! != OR ==?????????
-
-  // Get KERMA
-
-  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary photon
+//  if ( (theTrack->GetParticleDefinition()->GetPDGCharge()!=0) && (theTrack->GetParentID()==1)){//is the charged child of a primary photon
           
-          G4String materialprestep = presteppt->GetMaterial()->GetName();
+//          G4String materialprestep = presteppt->GetMaterial()->GetName();
 
-          G4String materialvertex = theTrack->GetLogicalVolumeAtVertex()->GetMaterial()->GetName();
+//          G4String materialvertex = theTrack->GetLogicalVolumeAtVertex()->GetMaterial()->GetName();
 
-          if ( (materialvertex == "DryAir")){
+//          if ( (materialvertex == "DryAir")){
 
-		  G4double eKinVertex = theTrack->GetVertexKineticEnergy()/keV; // Ekin at vertex, divide by MeV to put the units as MeV
-		  G4double mass_g = presteppt->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/g; //gives us the mass of the critical volume (10cm^3)
+//		  G4double eKinVertex = theTrack->GetVertexKineticEnergy()/keV; // Ekin at vertex, divide by MeV to put the units as MeV
+//		  G4double mass_g = presteppt->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/g; //gives us the mass of the critical volume (10cm^3)
 
-		  G4double kerma = eKinVertex / mass_g;
+//		  G4double kerma = eKinVertex / mass_g;
 	          
-                  if (materialvertex != materialprestep){
-                  G4cout << "materials dont match" << G4endl; 
-                  }
+//                  if (materialvertex != materialprestep){
+//                  G4cout << "materials dont match" << G4endl; 
+//                  }
 
-		  G4double xpos_kerma = pos.x()/mm;
-		  G4double ypos_kerma = pos.y()/mm;
-		  G4double zpos_kerma = pos.z()/mm;
+//		  G4double xpos_kerma = pos.x()/mm;
+//		  G4double ypos_kerma = pos.y()/mm;
+//		  G4double zpos_kerma = pos.z()/mm;
 
 		  //G4cout << "particle id - " << id << G4endl;
 		  //G4cout << "parent id - " << parentid << G4endl;
@@ -120,60 +102,26 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
 
 
 
-#ifdef ANALYSIS_USE  
-            BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
-            if(zpos_kerma >= -50.0 *mm && zpos_kerma <= 50.0*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
-                        }
-            if(zpos_kerma >= -50.0 *mm && zpos_kerma <= 50.0*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);
-             }                       
+//#ifdef ANALYSIS_USE  
+//            BrachyAnalysisManager* analysis = BrachyAnalysisManager::GetInstance();
+//            if(zpos_kerma >= -50.0 *mm && zpos_kerma <= 50.0*mm) {analysis -> FillH3WithKerma(xpos_kerma,ypos_kerma,kerma);
+//                        }
+//            if(zpos_kerma >= -50.0 *mm && zpos_kerma <= 50.0*mm) {analysis -> FillH5WithKerma(xpos_kerma,ypos_kerma,kerma);
+//             }                       
         
-#endif
+//#endif
 
-		  theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
-       //}
-  //}
-    }
-  }   
-
-
-  // **************** USING SCORING METHOD ***********
-
-  //if ( (theTrack->GetParticleDefinition()->GetPDGCharge()==0)&& (material == "Water") ){//is a charged particle hitting the water 	
-  //
-  //      G4double eKinVertex = theTrack->GetVertexKineticEnergy()/keV; 
-        //G4cout << eKinVertex << G4endl; 
-        //theTrack -> SetTrackStatus(fKillSecondaries);
-  //      theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
-  //  }
-  // **************** OLD METHOD **********************
-
-  // **************** PATRIK'S METHOD **********************
-  //The following code is with help from Dr Patrik Eschle <patrik.eschle@zhaw.ch>, who himself cites help using GetSecondaryInCurrentStep  from Tianyu Liu <kingcrimsontianyu@gmail.com>
-
-  //if (id ==1 && charge ==0.0){ //primary photon
-  //   const std::vector<const G4Track*>* secondaryList = aStep->GetSecondaryInCurrentStep();
-  //   for (auto it = secondaryList->begin(); it != secondaryList->end(); ++it)
-  //   {
-  //       G4double secondaryCharge = (*it)->GetParticleDefinition()->GetPDGCharge();
-  //       // score if the secondary particle is charged particle
-  //       if(secondaryCharge != 0.0)
-  //       {
-  //          G4double eKin  = (*it)->GetKineticEnergy()/MeV;
-  //         
-  //          G4StepPoint* p1 = aStep->GetPreStepPoint();
-  //
-  //          G4double mass = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetMass()/kg;
-  //
-  //          G4double kerma = eKin / mass;
-  //          kerma *= aStep->GetPreStepPoint()->GetWeight();
-  //
-  //          G4ThreeVector coord1 = p1->GetPosition(); // position in the global coordinate system
-  //          G4double xpos_kerma = coord1.x(); //should have mm here or no?????????
-  //          G4double ypos_kerma = coord1.y();
-  //          G4double zpos_kerma = coord1.z();
-  //  
-  // **************************************
+//		  theTrack -> SetTrackStatus(fKillTrackAndSecondaries);
+      
  
+    //}
+  //}   
+
+
+  
+
+
+
 
   //if(theTrack-> GetTrackStatus() == fAlive) {return;}
 
