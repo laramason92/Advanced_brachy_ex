@@ -85,7 +85,7 @@ void BrachyAnalysisManager::book()
  delete theTFile;
  theTFile = new TFile("brachytherapy.root", "RECREATE");
  
- histo = new TH1F("h10","energy spectrum", 800, 0., 800);
+ histo = new TH1F("h10","energy spectrum", 1000, 0., 1000);
  histo2 = new TH2F("h20","edep2Dxy", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm
 				     801, -100.125, 100.125);// binning, ymin, ymax, along y direction in mm
  //histo2_1cm = new TH2F("h20_1cm","edep2Dxy_1cm", 801, -100.125, 100.125, // binning, xmin, xmax, along x direction in mm

@@ -23,55 +23,42 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// Code developed by:
-// S. Guatelli, D. Cutajar, J. Poder, 
-//Centre For Medical Radiation Physics, University of Wollongong
 //
-//    *******************************
-//    *                             *
-//    *    BrachyFactoryGammaMed       *
-//    *                             *
-//    *******************************
+//    *****************************************
+//    *                                       *
+//    *      BrachyDetectrorMessenger.hh      *
+//    *                                       *
+//    *****************************************
 //
+// $Id: BrachyDetectorMessenger.hh 69765 2013-05-14 10:11:22Z gcosmo $
 //
+// 
+#ifndef BrachyDetectorMessenger_h
+#define BrachyDetectorMessenger_h 1
+
 #include "globals.hh"
-#include "BrachyFactoryGammaMed.hh"
-#include "G4ParticleTable.hh"
-#include "Randomize.hh"  
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "G4IonTable.hh"
-#include "G4UImanager.hh"
-#include "G4RunManager.hh" 
-#include "BrachyDetectorMessenger.hh"
-#include "BrachyDetectorConstructionGammaMed.hh"
+#include "G4UImessenger.hh"
 
-BrachyFactoryGammaMed:: BrachyFactoryGammaMed()
-{
-  gammaMedSource = new  BrachyDetectorConstructionGammaMed(); 
-}
+class BrachyDetectorConstruction;
+class G4UIdirectory;
+class G4UIcmdWithAString;
 
-BrachyFactoryGammaMed:: ~BrachyFactoryGammaMed()
-{
-  delete gammaMedSource;
-}
- 
-void BrachyFactoryGammaMed::CreateSource(G4VPhysicalVolume* mother)
-{
-  gammaMedSource -> ConstructGammaMed(mother);
-}
 
-void BrachyFactoryGammaMed::MoveSource(G4double z)
+class BrachyDetectorMessenger: public G4UImessenger
 {
- //gammaMedSource -> MoveSourceX(x);
- //gammaMedSource -> MoveSourceY(y);
- G4cout << "The move command has been passed to the Factory" << G4endl;
- gammaMedSource -> MoveSourceZ(z);
- 
-}
+public:
+  BrachyDetectorMessenger(BrachyDetectorConstruction* );
+  ~BrachyDetectorMessenger();
+    
+  void SetNewValue(G4UIcommand*, G4String);
+  void SetNewValueDouble(G4UIcommand*, G4double);
+  
+private:
 
-void BrachyFactoryGammaMed::CleanSource()
-{
-  gammaMedSource -> CleanGammaMed();
-  gammaMedSource = 0;
-}
+  BrachyDetectorConstruction*  detector;// pointer to detector
+  G4UIdirectory*               detectorDir; 
+  G4UIcmdWithAString*          phantomMaterialCmd; // change phantom material
+  G4UIcmdWithAString*          sourceCmd; // change brachytherapic source 
+};
+#endif
+

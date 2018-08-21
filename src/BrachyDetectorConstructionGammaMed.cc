@@ -59,7 +59,7 @@
 #include "BrachyMaterial.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
-#include "G4GenericMessenger.hh"
+//#include "G4GenericMessenger.hh"
 
 BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
   : //crit_vol(0),logical_crit_vol(0),physical_crit_vol(0), 
@@ -69,8 +69,8 @@ BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
     End2_steel_shell(0),logical_End2_steel_shell(0), physical_End2_steel_shell(0),
     cable(0),logical_cable(0),physical_cable(0),
     iridium_core(0),logical_iridium_core(0),physical_iridium_core(0),
-    fMessenger(0), fSourceTransX(0), fSourceTransY(0), fSourceTransZ(0),
-
+    fSourceTransX(0*mm), fSourceTransY(0*mm), fSourceTransZ(0*mm),
+    //fMessenger(0), 
     //metal_ring(0),logical_metal_ring(0),physical_metal_ring(0),
     //plas_ring(0),logical_plas_ring(0),physical_plas_ring(0),
     //air_ring(0),logical_air_ring(0),physical_air_ring(0),
@@ -88,13 +88,13 @@ BrachyDetectorConstructionGammaMed::BrachyDetectorConstructionGammaMed()
     steelAttributes(0), endAttributes(0), simpleIridiumVisAtt(0), titaniumAttributes(0)
 {
   pMat = new BrachyMaterial();
-  DefineCommands();
+  //DefineCommands();
 }
 
 BrachyDetectorConstructionGammaMed::~BrachyDetectorConstructionGammaMed()
 { 
   delete pMat;
-  delete fMessenger; 
+  //delete fMessenger; 
 }
 
 void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mother)
@@ -125,8 +125,9 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   G4double shelloffset_z = 0.05 * mm; 
   steel_shell = new G4Tubs("steel_shell",shellr_min, shellr_max/2, shell_length/2.,0.*deg,360.*deg);
   logical_steel_shell = new G4LogicalVolume(steel_shell, steelMat, "steel_shell_log", 0, 0, 0);
-  physical_steel_shell = new G4PVPlacement(0,G4ThreeVector(shelloffset_x,shelloffset_y,shelloffset_z),"physical_steel_shell", logical_steel_shell, mother, false, 0, true);
+  physical_steel_shell = new G4PVPlacement(0,G4ThreeVector(shelloffset_x + fSourceTransX,shelloffset_y + fSourceTransY,shelloffset_z + fSourceTransZ),"physical_steel_shell", logical_steel_shell, mother, false, 0, true);
 
+  G4cerr << "This is when the shell gets made" << G4endl; 
 
 //Define dimensions of the air gap between Steel shell and Iridium core
   G4double airr_min = 0.00 * mm;
@@ -387,85 +388,15 @@ void BrachyDetectorConstructionGammaMed::ConstructGammaMed(G4VPhysicalVolume* mo
   //logical_air_rod3 -> SetVisAttributes(airAttributes);
   //logical_air_ring -> SetVisAttributes(airAttributes);
   //logical_crit_vol -> SetVisAttributes(airAttributes);
+
 }
 
 // The following with instruction from example B5
 
-void BrachyDetectorConstructionGammaMed::MoveSourceX(G4double x)//, G4double y, G4double z)
-{
- if (!physical_steel_shell){
-      G4cerr << "Detector has not yet been constructed." << G4endl;
-      return;
-   } 
-
- fSourceTransX = x;
- physical_steel_shell->SetTranslation(G4ThreeVector(x,0,0));  
-
- G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
-}
-
-void BrachyDetectorConstructionGammaMed::MoveSourceY(G4double y)
-{
- if (!physical_steel_shell){
-      G4cerr << "Detector has not yet been constructed." << G4endl;
-      return;
-   } 
-
- fSourceTransY = y;
- physical_steel_shell->SetTranslation(G4ThreeVector(0,y,0));  
-
- G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
-}
-
-void BrachyDetectorConstructionGammaMed::MoveSourceZ(G4double z)
-{
- if (!physical_steel_shell){
-      G4cerr << "Detector has not yet been constructed." << G4endl;
-      return;
-   } 
-
- fSourceTransZ = z;
- physical_steel_shell->SetTranslation(G4ThreeVector(0,0,z));  
-
- G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
-}
-
-void BrachyDetectorConstructionGammaMed::DefineCommands()
-{
- fMessenger = new G4GenericMessenger(this,
-                                      "/gammamed/detector/",
-                                      "Detector control");
- 
- 
- auto& transSourceXCmd
-    = fMessenger->DeclareMethodWithUnit("SourceTranslationX","mm",
-                                &BrachyDetectorConstructionGammaMed::MoveSourceX,
-                                "Set translation of source x.");
-  transSourceXCmd.SetParameterName("translationx", true);
-  transSourceXCmd.SetRange("translationx>=0. && translationx<100.");
-  transSourceXCmd.SetDefaultValue("0.");
- 
- auto& transSourceYCmd
-    = fMessenger->DeclareMethodWithUnit("SourceTranslationY","mm",
-                                &BrachyDetectorConstructionGammaMed::MoveSourceY,
-                                "Set translation of source y.");
-  transSourceYCmd.SetParameterName("translationy", true);
-  transSourceYCmd.SetRange("translationy>=0. && translationy<100.");
-  transSourceYCmd.SetDefaultValue("0.");
-
- auto& transSourceZCmd
-    = fMessenger->DeclareMethodWithUnit("SourceTranslationZ","mm",
-                                &BrachyDetectorConstructionGammaMed::MoveSourceZ,
-                                "Set translation of source z.");
-  transSourceZCmd.SetParameterName("translationz", true);
-  transSourceZCmd.SetRange("translationz>=0. && translationz<100.");
-  transSourceZCmd.SetDefaultValue("0.");
-}
-
-
 
 void BrachyDetectorConstructionGammaMed::CleanGammaMed()
-{ 
+{
+  G4cerr << "This is when things get deleted" << G4endl; 
   delete simpleIridiumVisAtt; 
   simpleIridiumVisAtt = 0;
   
@@ -657,3 +588,82 @@ void BrachyDetectorConstructionGammaMed::CleanGammaMed()
  
  G4RunManager::GetRunManager() -> GeometryHasBeenModified();
 }
+
+void BrachyDetectorConstructionGammaMed::MoveSourceX(G4double x)//, G4double y, G4double z)
+{
+G4cerr << "MOVING THE SOURCE X by " << x << "mm" << G4endl;
+ if (!physical_steel_shell){
+      G4cerr << "Detector has not yet been constructed." << G4endl;
+      return;
+   } 
+ G4double shelloffset_x = 0.0 * mm;
+ fSourceTransX = x;
+ physical_steel_shell->SetTranslation(G4ThreeVector(shelloffset_x + x,0,0));  
+
+ G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
+}
+
+void BrachyDetectorConstructionGammaMed::MoveSourceY(G4double y)
+{
+G4cerr << "MOVING THE SOURCE Y by " << y << "mm" << G4endl;
+ if (!physical_steel_shell){
+      G4cerr << "Detector has not yet been constructed." << G4endl;
+      return;
+   } 
+
+ G4double shelloffset_y = 0.0 * mm;
+ fSourceTransY = y;
+ physical_steel_shell->SetTranslation(G4ThreeVector(0,shelloffset_y + y,0));  
+
+ G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
+}
+
+void BrachyDetectorConstructionGammaMed::MoveSourceZ(G4double z)
+{
+G4cerr << "MOVING THE SOURCE Z by " << z << "mm" << G4endl;
+ if (!physical_steel_shell){
+      G4cerr << "Detector has not yet been constructed." << G4endl;
+      return;
+   } 
+
+ G4double shelloffset_z = 0.05 * mm;
+ fSourceTransZ = z*mm;
+ physical_steel_shell->SetTranslation(G4ThreeVector(0,0,shelloffset_z + z));  
+
+ G4RunManager::GetRunManager() -> GeometryHasBeenModified(); 
+}
+
+//void BrachyDetectorConstructionGammaMed::DefineCommands()
+//{
+// fMessenger = new G4GenericMessenger(this,
+//                                      "/gammamed/detector/",
+//                                      "Detector control");
+// 
+// 
+// auto& transSourceXCmd
+//    = fMessenger->DeclareMethodWithUnit("SourceTranslationX","mm",
+//                                &BrachyDetectorConstructionGammaMed::MoveSourceX,
+//                                "Set translation of source x.");
+//  transSourceXCmd.SetParameterName("translationx", true);
+//  transSourceXCmd.SetRange("translationx>=0. && translationx<100.");
+//  transSourceXCmd.SetDefaultValue("0.");
+// 
+// auto& transSourceYCmd
+//    = fMessenger->DeclareMethodWithUnit("SourceTranslationY","mm",
+//                                &BrachyDetectorConstructionGammaMed::MoveSourceY,
+//                                "Set translation of source y.");
+//  transSourceYCmd.SetParameterName("translationy", true);
+//  transSourceYCmd.SetRange("translationy>=0. && translationy<100.");
+//  transSourceYCmd.SetDefaultValue("0.");
+//
+// auto& transSourceZCmd
+//    = fMessenger->DeclareMethodWithUnit("SourceTranslationZ","mm",
+//                                &BrachyDetectorConstructionGammaMed::MoveSourceZ,
+//                                "Set translation of source z.");
+//  transSourceZCmd.SetParameterName("translationz", true);
+//  transSourceZCmd.SetRange("translationz>=0. && translationz<100.");
+//  transSourceZCmd.SetDefaultValue("0.");
+//}
+
+
+

@@ -42,7 +42,8 @@
 #include "BrachyDetectorConstruction.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
-
+#include "G4UIcmdWithADouble.hh"
+#include "G4UIcommand.hh"
 
 BrachyDetectorMessenger::BrachyDetectorMessenger( BrachyDetectorConstruction* Det): detector(Det)
 { 
@@ -60,10 +61,19 @@ BrachyDetectorMessenger::BrachyDetectorMessenger( BrachyDetectorConstruction* De
   sourceCmd -> SetDefaultValue(" ");
   sourceCmd -> SetCandidates("TG186 Flexi Iodine Leipzig GammaMed");
   sourceCmd -> AvailableForStates(G4State_PreInit,G4State_Idle); 
+
+  transCmd = new G4UIcmdWithAString("/gammamed/detector/SourceTranslationZ",this);
+  transCmd -> SetGuidance("Move source in Z direction"); 
+  transCmd -> SetParameterName("choice",true);
+  transCmd -> SetDefaultValue("0.");
+  //sourceCmd -> SetCandidates("TG186 Flexi Iodine Leipzig GammaMed");
+  //transCmd -> AvailableForStates(G4State_PreInit,G4State_Idle); //???
+  
  }
 
 BrachyDetectorMessenger::~BrachyDetectorMessenger()
 {
+  delete transCmd;
   delete sourceCmd;
   delete phantomMaterialCmd; 
   delete detectorDir;
@@ -84,5 +94,15 @@ void BrachyDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue
        detector -> SwitchBrachytherapicSeed();
       }
    }
+
+//}
+//void BrachyDetectorMessenger::SetNewValueDouble(G4UIcommand* command,G4double newValue)
+//{
+   G4cout << "Enter the setnewvalue func" << G4endl;
+   if (command == transCmd)
+  { detector -> MoveTheSource(G4UIcommand::ConvertToDouble(newValue));
+    G4cout << "The command has been passed to the detector messenger" << G4endl;
+    }
+
 }
 

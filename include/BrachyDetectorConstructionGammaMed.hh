@@ -71,7 +71,7 @@ public:
 
 private:   
 
-  void  DefineCommands();
+  //void  DefineCommands();
 
   G4GenericMessenger* fMessenger;
 

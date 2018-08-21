@@ -123,7 +123,7 @@ void BrachySteppingAction::UserSteppingAction(const G4Step* aStep)
 
 
 
-  //if(theTrack-> GetTrackStatus() == fAlive) {return;}
+  if(theTrack-> GetTrackStatus() == fAlive) {return;}
 
   // G4cout << "Start secondariessss" << G4endl;  
   // Retrieve the secondary particles

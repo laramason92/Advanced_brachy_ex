@@ -61,12 +61,14 @@
 #include "BrachyFactoryGammaMed.hh"
 #include "BrachyDetectorMessenger.hh"
 #include "BrachyDetectorConstruction.hh"
+//#include "BrachyDetectorConstructionGammaMed.hh" //to allow access to the translation function
+#include "G4GenericMessenger.hh"
 
 BrachyDetectorConstruction::BrachyDetectorConstruction(): 
   detectorChoice(0), factory(0),
   World(0), WorldLog(0), WorldPhys(0),
   Phantom(0), PhantomLog(0), PhantomPhys(0),
-  phantomAbsorberMaterial(0)
+  phantomAbsorberMaterial(0), fMessenger(0) 
 {
  // Define half size of the phantom along the x, y, z axis
  phantomSizeX = 150.*cm;
@@ -78,6 +80,10 @@ BrachyDetectorConstruction::BrachyDetectorConstruction():
  worldSizeX = 50.0*m;
  worldSizeY = 50.0*m;
  worldSizeZ = 50.0*m;
+
+ //SourceTranslationX = 10*mm;
+ //SourceTranslationY = 10*mm;
+ //SourceTranslationZ = 10*mm;
 
  // Define the messenger of the Detector component
  // It is possible to modify geometrical parameters through UI
@@ -96,6 +102,7 @@ BrachyDetectorConstruction::~BrachyDetectorConstruction()
   delete pMaterial;
   delete factory;
   delete detectorMessenger;
+  delete fMessenger;
 }
 
 G4VPhysicalVolume* BrachyDetectorConstruction::Construct()
@@ -120,19 +127,19 @@ void BrachyDetectorConstruction::SwitchBrachytherapicSeed()
 
   switch(detectorChoice)
   { 
+   //case 1:
+   //   factory = new BrachyFactoryI();
+   //   break;
+   //case 2:
+   //   factory = new BrachyFactoryLeipzig();
+   //   break;
+   //case 3:
+   //   factory = new BrachyFactoryTG186();
+   //   break;
+   //case 4:
+   //   factory = new BrachyFactoryFlexi();
+   //   break;
    case 1:
-      factory = new BrachyFactoryI();
-      break;
-   case 2:
-      factory = new BrachyFactoryLeipzig();
-      break;
-   case 3:
-      factory = new BrachyFactoryTG186();
-      break;
-   case 4:
-      factory = new BrachyFactoryFlexi();
-      break;
-   case 5:
       factory = new BrachyFactoryGammaMed();
       break;
    default:
@@ -142,10 +149,32 @@ void BrachyDetectorConstruction::SwitchBrachytherapicSeed()
 
   factory -> CreateSource(PhantomPhys);
   G4cout << "... New source is created ..." << G4endl;
+  //factory -> MoveSource(SourceTranslationX, SourceTranslationY, SourceTranslationZ);
 
   // Notify run manager that the new geometry has been built
   G4RunManager::GetRunManager() -> GeometryHasBeenModified();
   G4cout << "... Geometry is notified .... THAT'S IT!!!!!" << G4endl;
+}
+
+
+void BrachyDetectorConstruction::MoveTheSource(G4double SourceTranslationZ)
+{
+
+  factory -> CleanSource();
+  G4cout << "Old Source is deleted and we're going to move the source now" << G4endl;
+  delete factory;
+
+  factory = new BrachyFactoryGammaMed();
+
+  factory -> CreateSource(PhantomPhys);
+  G4cout << "... New source is created ..." << G4endl;
+  factory -> MoveSource(SourceTranslationZ);
+  G4cout << "... New source is translated ..." << G4endl;
+
+  // Notify run manager that the new geometry has been built
+  G4RunManager::GetRunManager() -> GeometryHasBeenModified();
+  G4cout << "... Geometry is notified .... THAT'S IT!!!!!" << G4endl;
+
 }
 
 void BrachyDetectorConstruction::SelectBrachytherapicSeed(G4String val)
@@ -248,3 +277,39 @@ void BrachyDetectorConstruction::SetPhantomMaterial(G4String materialChoice)
   } else 
     { G4cout << "WARNING: material '" << materialChoice << "' not available!" << G4endl;}
 }
+
+
+//void BrachyDetectorConstruction::DefineCommands()
+//{
+// fMessenger = new G4GenericMessenger(this,
+//                                      "/gammamed/detector/",
+//                                      "Detector control");
+// 
+// fMessenger->DeclareProperty("SourceTranslationX",SourceTranslationX,"Detector control").SetUnit("mm");  
+// fMessenger->DeclareProperty("SourceTranslationY",SourceTranslationY,"Detector control").SetUnit("mm");  
+// fMessenger->DeclareProperty("SourceTranslationZ",SourceTranslationZ,"Detector control").SetUnit("mm");  
+ //auto& transSourceXCmd
+ //   = fMessenger->DeclareMethodWithUnit("SourceTranslationX","mm",
+ //                               &BrachyDetectorConstruction::MoveSourceX,
+ //                               "Set translation of source x.");
+ // transSourceXCmd.SetParameterName("translationx", true);
+ // transSourceXCmd.SetRange("translationx>=0. && translationx<100.");
+ // transSourceXCmd.SetDefaultValue("0.");
+ 
+ //auto& transSourceYCmd
+ //   = fMessenger->DeclareMethodWithUnit("SourceTranslationY","mm",
+ //                               &BrachyDetectorConstruction::MoveSourceY,
+ //                               "Set translation of source y.");
+ // transSourceYCmd.SetParameterName("translationy", true);
+ // transSourceYCmd.SetRange("translationy>=0. && translationy<100.");
+ //transSourceYCmd.SetDefaultValue("0.");
+
+ //auto& transSourceZCmd
+ //   = fMessenger->DeclareMethodWithUnit("SourceTranslationZ","mm",
+ //                               &BrachyDetectorConstruction::MoveSourceZ,
+ //                               "Set translation of source z.");
+ // transSourceZCmd.SetParameterName("translationz", true);
+ // transSourceZCmd.SetRange("translationz>=0. && translationz<100.");
+ // transSourceZCmd.SetDefaultValue("0.");
+//}
+

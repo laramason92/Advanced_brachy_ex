@@ -46,6 +46,7 @@ class G4VPhysicalVolume;
 class G4VPhysicalVolume;
 class BrachyMaterial;
 class BrachyFactory;
+class G4GenericMessenger;
 
 class BrachyDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -60,9 +61,13 @@ public:
   void ConstructPhantom(); 
   void PrintDetectorParameters(); 
   void SetPhantomMaterial(G4String); 
-
+  void MoveTheSource( G4double);
 
 private:
+
+  void  DefineCommands();
+
+  G4GenericMessenger* fMessenger;
   
   G4int detectorChoice; //Select brachytherapic seed
   BrachyFactory* factory;
@@ -86,6 +91,11 @@ private:
   G4double worldSizeX ; //World XSize
   G4double worldSizeY ; //World YSize
   G4double worldSizeZ ; //World XSize
+
+ //G4double SourceTranslationX;
+ //G4double SourceTranslationY;
+ //G4double SourceTranslationZ;
+
   BrachyDetectorMessenger* detectorMessenger; 
   BrachyMaterial* pMaterial;   
 };

@@ -42,7 +42,7 @@
 class BrachyDetectorConstruction;
 class G4UIdirectory;
 class G4UIcmdWithAString;
-
+class G4UIcmdWithADouble;
 
 class BrachyDetectorMessenger: public G4UImessenger
 {
@@ -51,6 +51,7 @@ public:
   ~BrachyDetectorMessenger();
     
   void SetNewValue(G4UIcommand*, G4String);
+  //void SetNewValueDouble(G4UIcommand*, G4double);
   
 private:
 
@@ -58,6 +59,7 @@ private:
   G4UIdirectory*               detectorDir; 
   G4UIcmdWithAString*          phantomMaterialCmd; // change phantom material
   G4UIcmdWithAString*          sourceCmd; // change brachytherapic source 
+  G4UIcmdWithAString*          transCmd; // change brachytherapic source 
 };
 #endif
 

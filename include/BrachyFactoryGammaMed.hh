@@ -54,6 +54,7 @@ public:
   BrachyFactoryGammaMed();
   ~BrachyFactoryGammaMed();
   void CreateSource(G4VPhysicalVolume*);
+  void MoveSource(G4double);//,G4double,G4double);
   void CleanSource();
 
 private:

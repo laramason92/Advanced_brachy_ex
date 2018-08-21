@@ -71,7 +71,7 @@ gPad->SetLogy();
 
 // draw the graph with axis, continuous line, and put
 // a * at each point
-gr1->SetTitle("Radial dose deposition");
+gr1->SetTitle("  ");
 gr1-> GetXaxis()->SetTitle("r (cm)");
 gr1->GetYaxis()->SetTitle("Normalised dose rate (z=0)");
 gr1->SetLineWidth(1);
