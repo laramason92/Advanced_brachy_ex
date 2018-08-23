@@ -233,7 +233,8 @@ void BrachyDetectorConstruction::ConstructPhantom()
   G4VisAttributes* simpleBoxVisAtt = new G4VisAttributes(lblue);
   simpleBoxVisAtt -> SetVisibility(true);
   simpleBoxVisAtt -> SetForceWireframe(true);
-  PhantomLog -> SetVisAttributes(simpleBoxVisAtt);
+  PhantomLog -> SetVisAttributes(G4VisAttributes::GetInvisible());
+  //PhantomLog -> SetVisAttributes(simpleBoxVisAtt);
 }
 
 void BrachyDetectorConstruction::PrintDetectorParameters()

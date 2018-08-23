@@ -650,9 +650,59 @@ G4cerr << "MOVING THE SOURCE Z TO POSITION " << z  << G4endl;
  G4double shelloffset_x = 0.0 * mm;
 
  if (z == 1.){
+ fSourceTransX = 0.*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 30.*mm;
+  }
+ if (z == 2.){
  fSourceTransX = 13.8564*mm;
- fSourceTransY = 13.8564*mm;
- fSourceTransZ = 13.8564*mm;
+ fSourceTransY = 16.*mm;
+ fSourceTransZ = 38.*mm;
+  }
+ if (z == 3.){
+ fSourceTransX = 27.713*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 46.*mm;
+  }
+ if (z == 4.){
+ fSourceTransX = 13.8564*mm;
+ fSourceTransY = -16.*mm;
+ fSourceTransZ = 38.*mm;
+  }
+ if (z == 5.){
+ fSourceTransX = 13.8564*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 30.*mm;
+  }
+ if (z == 6.){
+ fSourceTransX = 8.8564*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 38.66*mm;
+  }
+ if (z == 7.){
+ fSourceTransX = 3.8564*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 47.32*mm;
+  }
+ if (z == 8.){
+ fSourceTransX = -1.14359*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 55.9808*mm;
+  }
+ if (z == 9.){
+ fSourceTransX = -6.1436*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 64.64*mm;
+  }
+ if (z == 10.){
+ fSourceTransX = -11.1436*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 73.30*mm;
+  }
+ if (z == 11.){
+ fSourceTransX = -16.1436*mm;
+ fSourceTransY = 0.*mm;
+ fSourceTransZ = 81.961*mm;
   }
  //fSourceTransZ = z*mm;
  //fSourceTransX = 13.8564*mm;
